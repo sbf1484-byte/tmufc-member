@@ -49,7 +49,7 @@ tbody tr.sel{background:var(--sel)}
 .filters button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;font:inherit;font-size:13px;padding:4px 12px;cursor:pointer}
 .filters button.on{background:var(--blue);border-color:var(--blue);color:#fff}
 .plist{list-style:none;margin:0;padding:0}
-.plist li{display:grid;grid-template-columns:44px 1fr;gap:4px 10px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.plist li{display:grid;grid-template-columns:1fr;gap:4px 10px;padding:10px 12px;border-bottom:1px solid var(--line)}
 .plist li:last-child{border-bottom:0}
 .plist li.out{opacity:.5}
 .no{font-size:26px;line-height:1;color:var(--blue);text-align:right;padding-top:2px}
@@ -57,7 +57,7 @@ tbody tr.sel{background:var(--sel)}
 .who strong{font-size:16px}
 .who small{color:var(--sub);font-size:12px}
 .tag{font-size:11px;border-radius:4px;padding:0 5px;background:var(--chip);color:var(--sub)}
-.pick{grid-column:2;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pick{grid-column:1;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .pick label{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--sub)}
 select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:5px 6px;min-width:70px}
 select.empty{color:var(--sub)}
@@ -242,6 +242,13 @@ select.bad{border-color:var(--short)}
 .sgsegs small{color:var(--sub);font-size:11px}
 .sgt td.off b{color:var(--warn)}
 .sgopt textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px;width:100%;resize:vertical}
+.helpbtn{position:absolute;right:14px;top:0;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;font:inherit;font-size:12px;border-radius:999px;padding:4px 10px;cursor:pointer}
+.helpbox details{border-bottom:1px solid var(--line);padding:2px 0}
+.helpbox summary{cursor:pointer;font-weight:700;font-size:15px;padding:10px 0}
+.helpbox .hb{font-size:14px;line-height:1.7;padding:0 0 10px}
+.helpbox .hb p{margin:0 0 6px}
+.helpbox .hb ul,.helpbox .hb ol{margin:0;padding-left:20px}
+.helpbox .hb li{margin-bottom:4px}
 .note{font-size:12px;color:var(--sub);margin:8px 2px 0}
 button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 </style></head><body>
@@ -249,16 +256,17 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 <script id="app">
 (function(){
 const HEAD='<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>ポジション整理 2026｜都立大サッカー部</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">';
-const POS=['GK','CB','HB','WB','CM','AM','CF'];
+const POS=['GK','CB','HV','WB','CM','AM','CF'];
 const SYS={
-  '3421':{label:'3-4-2-1',slots:{GK:1,CB:1,HB:2,WB:2,CM:2,AM:2,CF:1},xy:[['CF',50,13],['AM',32,30],['AM',68,30],['WB',11,50],['CM',37,53],['CM',63,53],['WB',89,50],['HB',22,73],['CB',50,76],['HB',78,73],['GK',50,92]]},
-  '3412':{label:'3-4-1-2',slots:{GK:1,CB:1,HB:2,WB:2,CM:2,AM:1,CF:2},xy:[['CF',35,13],['CF',65,13],['AM',50,31],['WB',11,50],['CM',37,53],['CM',63,53],['WB',89,50],['HB',22,73],['CB',50,76],['HB',78,73],['GK',50,92]]}
+  '3421':{label:'3-4-2-1',slots:{GK:1,CB:1,HV:2,WB:2,CM:2,AM:2,CF:1},xy:[['CF',50,13],['AM',32,30],['AM',68,30],['WB',11,50],['CM',37,53],['CM',63,53],['WB',89,50],['HV',22,73],['CB',50,76],['HV',78,73],['GK',50,92]]},
+  '3412':{label:'3-4-1-2',slots:{GK:1,CB:1,HV:2,WB:2,CM:2,AM:1,CF:2},xy:[['CF',35,13],['CF',65,13],['AM',50,31],['WB',11,50],['CM',37,53],['CM',63,53],['WB',89,50],['HV',22,73],['CB',50,76],['HV',78,73],['GK',50,92]]}
 };
 const KEY='tmu-pos-draft';
 const DATA_KEY='tmu-pos-data';
-const EMPTY={"rev": 1, "system": "3421", "players": [{"id": "n7", "no": null, "name": "程塚 駿太", "grade": 3, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n9", "no": null, "name": "中崎 琉斗", "grade": 3, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n11", "no": null, "name": "杉崎 志信", "grade": 3, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n12", "no": null, "name": "中田 幹登", "grade": 3, "reg": "GK", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n15", "no": null, "name": "上坂 緩大", "grade": 3, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n18", "no": null, "name": "後藤 志郎", "grade": 3, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n22", "no": null, "name": "若山 璃皇", "grade": 3, "reg": "DF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n44", "no": null, "name": "深津 啓一郎", "grade": 3, "reg": "DF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n54", "no": null, "name": "寳理 永翔", "grade": 3, "reg": "DF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n71", "no": null, "name": "西川 大翔", "grade": 3, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "a00", "no": null, "name": "末次 憲太郎", "grade": 3, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "n21", "no": null, "name": "森山 太稀", "grade": 2, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n23", "no": null, "name": "須藤 星空", "grade": 2, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n24", "no": null, "name": "坂井 玲仁", "grade": 2, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n25", "no": null, "name": "橋本 岳空", "grade": 2, "reg": "FW", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n26", "no": null, "name": "五島 凛也", "grade": 2, "reg": "DF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n27", "no": null, "name": "西田 有之介", "grade": 2, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n30", "no": null, "name": "加賀 獅音", "grade": 2, "reg": "FW", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n47", "no": null, "name": "渡辺 康太", "grade": 2, "reg": "DF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n84", "no": null, "name": "林 陸斗", "grade": 2, "reg": "DF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n92", "no": null, "name": "山田 琉空", "grade": 2, "reg": "FW", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n99", "no": null, "name": "中田 涼介", "grade": 2, "reg": "DF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "a01", "no": null, "name": "金山 範諏", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a02", "no": null, "name": "大汐 徹平", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a03", "no": null, "name": "小林 巧実", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "n2", "no": null, "name": "竹谷 晄希", "grade": 1, "reg": "DF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n17", "no": null, "name": "飯塚 惇", "grade": 1, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n19", "no": null, "name": "堤崎 陽琉", "grade": 1, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n20", "no": null, "name": "小柳 走", "grade": 1, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n29", "no": null, "name": "太田 金治", "grade": 1, "reg": "FW", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n31", "no": null, "name": "勝野 幹太", "grade": 1, "reg": "DF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n33", "no": null, "name": "朝見 元太", "grade": 1, "reg": "DF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n61", "no": null, "name": "荒瀬 智文", "grade": 1, "reg": "GK", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n97", "no": null, "name": "高澤 陽介", "grade": 1, "reg": "MF", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "a04", "no": null, "name": "秋山 奏翔", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a05", "no": null, "name": "石黒 琥珀", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a06", "no": null, "name": "佐々木 蒼太", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a07", "no": null, "name": "柴田 尊", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a08", "no": null, "name": "佐藤 和樹", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a09", "no": null, "name": "織田 唯楽", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a10", "no": null, "name": "新田 桜生", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}], "games": []};
+const EMPTY={"rev": 1, "system": "3421", "players": [{"id": "n7", "no": null, "name": "程塚 駿太", "grade": 3, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n9", "no": null, "name": "中崎 琉斗", "grade": 3, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n11", "no": null, "name": "杉崎 志信", "grade": 3, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n12", "no": null, "name": "中田 幹登", "grade": 3, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n15", "no": null, "name": "上坂 緩大", "grade": 3, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n18", "no": null, "name": "後藤 志郎", "grade": 3, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n22", "no": null, "name": "若山 璃皇", "grade": 3, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n44", "no": null, "name": "深津 啓一郎", "grade": 3, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n54", "no": null, "name": "寳理 永翔", "grade": 3, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n71", "no": null, "name": "西川 大翔", "grade": 3, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "a00", "no": null, "name": "末次 憲太郎", "grade": 3, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "n21", "no": null, "name": "森山 太稀", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n23", "no": null, "name": "須藤 星空", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n24", "no": null, "name": "坂井 玲仁", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n25", "no": null, "name": "橋本 岳空", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n26", "no": null, "name": "五島 凛也", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n27", "no": null, "name": "西田 有之介", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n30", "no": null, "name": "加賀 獅音", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n47", "no": null, "name": "渡辺 康太", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n84", "no": null, "name": "林 陸斗", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n92", "no": null, "name": "山田 琉空", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n99", "no": null, "name": "中田 涼介", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "a01", "no": null, "name": "金山 範諏", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a02", "no": null, "name": "大汐 徹平", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a03", "no": null, "name": "小林 巧実", "grade": 2, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "n2", "no": null, "name": "竹谷 晄希", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n17", "no": null, "name": "飯塚 惇", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n19", "no": null, "name": "堤崎 陽琉", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n20", "no": null, "name": "小柳 走", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n29", "no": null, "name": "太田 金治", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n31", "no": null, "name": "勝野 幹太", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n33", "no": null, "name": "朝見 元太", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n61", "no": null, "name": "荒瀬 智文", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "n97", "no": null, "name": "高澤 陽介", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false}, {"id": "a04", "no": null, "name": "秋山 奏翔", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a05", "no": null, "name": "石黒 琥珀", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a06", "no": null, "name": "佐々木 蒼太", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a07", "no": null, "name": "柴田 尊", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a08", "no": null, "name": "佐藤 和樹", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a09", "no": null, "name": "織田 唯楽", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}, {"id": "a10", "no": null, "name": "新田 桜生", "grade": 1, "reg": "", "h": 0, "p1": "", "p2": "", "out": false, "team": "", "inj": false, "added": true}], "games": []};
 let saved=null;try{saved=JSON.parse(localStorage.getItem(DATA_KEY)||'null')}catch(e){saved=null}
 if(!saved||!Array.isArray(saved.players))saved=JSON.parse(JSON.stringify(EMPTY));
+(saved.players||[]).forEach(p=>{if(p.p1==='HB')p.p1='HV';if(p.p2==='HB')p.p2='HV';});
 let lastSaved=null;
 let state=JSON.parse(JSON.stringify(saved));
 let dirty=false, sel=null, filter='all', scope='all', canSave=null, adding=false;
@@ -284,8 +292,8 @@ function stats(){
 }
 function shell(){
   $('#root').innerHTML=`
-<header><div class="wrap"><h1>ポジション整理 2026</h1><p>東京都立大学サッカー部　ポジション整理と練習試合のメンバー管理</p>
-<div class="sys" role="tablist">${[['pos','ポジション'],['game','練習試合']].map(([k,l])=>`<button role="tab" data-tab="${k}">${l}</button>`).join('')}</div></div></header>
+<header><div class="wrap" style="position:relative"><button class="helpbtn" id="helpbtn" aria-label="使い方">？ 使い方</button><h1>ポジション整理 2026</h1><p>東京都立大学サッカー部　ポジション整理とメンバー選考</p>
+<div class="sys" role="tablist">${[['pos','ポジション'],['game','メンバー選考']].map(([k,l])=>`<button role="tab" data-tab="${k}">${l}</button>`).join('')}</div></div></header>
 <div class="wrap" id="posview">
 <div class="scope"><span>システム</span><div class="seg">${['3421','3412'].map(k=>`<button class="num" data-sys="${k}">${SYS[k].label}</button>`).join('')}</div></div>
 <div class="scope"><span>集計対象</span><div class="seg" id="scope">${[['all','全体'],['A','Aチーム'],['B','Bチーム']].map(([k,l])=>`<button data-scope="${k}">${l}</button>`).join('')}</div></div>
@@ -301,6 +309,7 @@ function shell(){
   document.querySelectorAll('[data-sys]').forEach(b=>b.onclick=()=>{state.system=b.dataset.sys;touch();renderTop();});
   document.querySelectorAll('[data-scope]').forEach(b=>b.onclick=()=>{scope=b.dataset.scope;renderTop();renderList();});
   $('#savebtn').onclick=save;
+  $('#helpbtn').onclick=openHelp;
   $('#pos_img').onclick=()=>showImage(posImage,'ポジション別メンバー.png');
   document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 }
@@ -334,7 +343,7 @@ function renderFilters(){
   document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{filter=b.dataset.f;sel=POS.includes(filter)?filter:null;renderTop();renderList();});
 }
 function opt(cur,ph){return `<option value="">${ph}</option>`+POS.map(k=>`<option value="${k}"${k===cur?' selected':''}>${k}</option>`).join('')}
-function sortP(a,b){const an=hasNo(a)?+a.no:1e9,bn=hasNo(b)?+b.no:1e9;return an-bn||(b.grade||0)-(a.grade||0)||String(a.name).localeCompare(String(b.name),'ja')}
+function sortP(a,b){return (b.grade||0)-(a.grade||0)||String(a.name).localeCompare(String(b.name),'ja')}
 function renderList(){
   let ps=state.players.slice().sort(sortP);
   if(scope!=='all')ps=ps.filter(p=>p.team===scope);
@@ -344,8 +353,8 @@ function renderList(){
   else if(POS.includes(filter))ps=ps.filter(p=>p.p1===filter||p.p2===filter).sort((a,b)=>(a.p1===filter?0:1)-(b.p1===filter?0:1)||sortP(a,b));
   if(!ps.length){$('#plist').innerHTML=state.players.length?'<li style="display:block;color:var(--sub)">該当する選手はいません。</li>':'<li style="display:block;color:var(--sub)">まだ選手がいません。下の「データ」からデータを読み込むか、「選手を追加」から登録してください。</li>';}
   else $('#plist').innerHTML=ps.map(p=>{
-    const info=[p.grade?p.grade+'年':'',p.reg?'登録'+p.reg:'',p.h?p.h+'cm':''].filter(Boolean).join('　');
-    return `<li data-id="${esc(p.id)}" class="${p.out?'out':''}${p.inj?' inj':''}"><div class="no num">${hasNo(p)?esc(p.no):'－'}</div><div><div class="who"><strong>${esc(p.name)}</strong><small>${esc(info)}</small>${p.added?`<button class="delbtn" data-del>削除</button>`:''}</div></div>
+    const info=[p.grade?p.grade+'年':'',p.h?p.h+'cm':''].filter(Boolean).join('　');
+    return `<li data-id="${esc(p.id)}" class="${p.out?'out':''}${p.inj?' inj':''}"><div><div class="who"><strong>${esc(p.name)}</strong><small>${esc(info)}</small></div></div>
 <div class="pick"><div class="seg teamseg" aria-label="チーム"><button data-team="A" class="tA${p.team==='A'?' on':''}">A</button><button data-team="B" class="tB${p.team==='B'?' on':''}">B</button></div><label>1st<select data-k="p1" class="${p.p1?'':'empty'}">${opt(p.p1,'未定')}</select></label><label>2nd<select data-k="p2" class="${p.p2?'':'empty'}${p.p2&&p.p2===p.p1?' bad':''}">${opt(p.p2,'なし')}</select></label><button class="outbtn injbtn${p.inj?' on':''}" data-inj>${p.inj?'ケガ中':'ケガ'}</button><button class="outbtn${p.out?' on':''}" data-out>${p.out?'対象外':'対象'}</button></div></li>`}).join('');
   document.querySelectorAll('#plist li[data-id]').forEach(li=>{
     const p=state.players.find(x=>x.id===li.dataset.id);
@@ -365,20 +374,16 @@ function renderAdd(){
   if(!adding){a.innerHTML='<div class="addbox" style="text-align:center"><button class="btn ghost" id="openadd">＋ 選手を追加</button></div>';$('#openadd').onclick=()=>{adding=true;renderAdd();$('#f_name').focus();};return;}
   a.innerHTML=`<div class="addbox"><div class="grid">
 <label class="wide">氏名（必須）<input id="f_name" autocomplete="off" placeholder="例：伊藤 優汰"></label>
-<label>背番号<input id="f_no" inputmode="numeric" autocomplete="off"></label>
 <label>学年<select id="f_grade"><option value="">－</option><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
-<label>登録ポジション<select id="f_reg"><option value="">－</option><option>GK</option><option>DF</option><option>MF</option><option>FW</option></select></label>
 <label>身長（cm）<input id="f_h" inputmode="numeric" autocomplete="off"></label>
 <label>チーム<select id="f_team"><option value="">未分類</option><option>A</option><option>B</option></select></label>
 <label>1st<select id="f_p1">${opt('','未定')}</select></label>
 </div><p class="err" id="f_err"></p><div class="acts"><button class="btn ghost" id="f_cancel">やめる</button><button class="btn" id="f_ok">追加する</button></div></div>`;
   $('#f_cancel').onclick=()=>{adding=false;renderAdd();};
   $('#f_ok').onclick=()=>{
-    const name=$('#f_name').value.trim(),no=$('#f_no').value.trim().replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248)),h=$('#f_h').value.trim().replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248));
+    const name=$('#f_name').value.trim(),h=$('#f_h').value.trim().replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248));
     if(!name){$('#f_err').textContent='氏名を入力してください。';return;}
-    if(no&&!/^\d+$/.test(no)){$('#f_err').textContent='背番号は数字で入力してください。';return;}
-    if(no&&state.players.some(p=>hasNo(p)&&String(p.no)===no)){$('#f_err').textContent='背番号 '+no+' はすでに使われています。';return;}
-    state.players.push({id:'p'+Date.now().toString(36),no:no?+no:null,name,reg:$('#f_reg').value,grade:+$('#f_grade').value||0,h:/^\d+$/.test(h)?+h:0,p1:$('#f_p1').value,p2:'',out:false,team:$('#f_team').value,added:true});
+    state.players.push({id:'p'+Date.now().toString(36),no:null,name,reg:'',grade:+$('#f_grade').value||0,h:/^\d+$/.test(h)?+h:0,p1:$('#f_p1').value,p2:'',out:false,team:$('#f_team').value,added:true});
     touch();adding=false;renderTop();renderList();
   };
 }
@@ -402,7 +407,7 @@ function save(){
     if(!obj||!Array.isArray(obj.players)){$('#d_msg').textContent='このツールのデータではないようです。';return;}
     if(state.players.length&&!await ask(`いまのデータ（選手${state.players.length}人）を、読み込むデータ（選手${obj.players.length}人）で置き換えます。よろしいですか？`))return;
     try{localStorage.setItem(DATA_KEY,JSON.stringify(obj));}catch(er){$('#d_msg').textContent='この端末に保存できませんでした。';return;}location.reload();};
-  $('#d_clear').onclick=async()=>{if(!await ask('この端末のデータをすべて消します。先に「データを書き出す」で控えをとっておくことをおすすめします。消しますか？'))return;try{localStorage.removeItem(DATA_KEY);localStorage.removeItem(KEY);}catch(er){}location.reload();};
+  const _dc=$('#d_clear');if(_dc)_dc.onclick=async()=>{if(!await ask('この端末のデータをすべて消します。先に「データを書き出す」で控えをとっておくことをおすすめします。消しますか？'))return;try{localStorage.removeItem(DATA_KEY);localStorage.removeItem(KEY);}catch(er){}location.reload();};
 }
 // ---- 紅白戦 ----
 const byId=id=>state.players.find(p=>p.id===id);
@@ -640,7 +645,7 @@ function segImage(g,i){
   const tmp=cv(10,10).getContext('2d');const rowsH=measureRows(tmp,rows,W-120,30);
   const pitchY=290,pitchH=980;const H=Math.round(pitchY+pitchH+40+rowsH+90);
   const c=cv(W,H),ctx=c.getContext('2d');
-  header(ctx,W,`${g.opp?'vs '+g.opp:'練習試合'}`,`${fmtDate(g.date)}　練習試合　${perSummary(g)}`,`${segLabel(g,i)}（${b-a}分）　${SYS[s.sys].label}`);
+  header(ctx,W,`${g.opp?'vs '+g.opp:'メンバー選考'}`,`${fmtDate(g.date)}　${perSummary(g)}`,`${segLabel(g,i)}（${b-a}分）　${SYS[s.sys].label}`);
   drawLineup(ctx,s,60,pitchY,W-120,pitchH,inSet,sn);
   drawLabelRows(ctx,rows,60,pitchY+pitchH+70,W-120,30);
   ctx.fillStyle=IMG.sub;ft(ctx,22,400);ctx.fillText('黄色の枠＝この区間から入った選手',60,H-36);
@@ -654,7 +659,7 @@ function gameImage(g){
   const mins=minutesBy(g,-1);const pl=gAll().map(p=>({p,m:(mins[p.id]||{tot:0}).tot})).sort((a,b)=>b.m-a.m);
   const colsN=3,lineH=44;const minH=90+Math.ceil(pl.length/colsN)*lineH;const H=Math.round(y+minH+60);
   const c=cv(W,H),ctx=c.getContext('2d');
-  const {total}=offs(g);header(ctx,W,`${g.opp?'vs '+g.opp:'練習試合'}`,`${fmtDate(g.date)}　練習試合`,`${perSummary(g)}（合計${total}分）`);
+  const {total}=offs(g);header(ctx,W,`${g.opp?'vs '+g.opp:'メンバー選考'}`,`${fmtDate(g.date)}`,`${perSummary(g)}（合計${total}分）`);
   blocks.forEach((bk,k)=>{const x=x0+(k%2)*(colW+gap),yy=rowsY[Math.floor(k/2)];const[a,b]=segRange(g,bk.i);const d=diff(g,bk.i);
     ctx.fillStyle=IMG.blue;ft(ctx,40,700,IMG.num);ctx.fillText(String(bk.i+1),x,yy+40);
     ctx.fillStyle=IMG.white;fitText(ctx,`${segLabel(g,bk.i)}（${b-a}分）`,colW-50,26,700);ctx.fillText(`${segLabel(g,bk.i)}（${b-a}分）`,x+40,yy+30);
@@ -692,9 +697,53 @@ function openImgMenu(g){
 <button class="btn" data-img="seg">区間${cur+1}のメンバー（${esc(segLabel(g,cur))}）</button>
 <button class="btn ghost" data-img="all">試合全体（全${g.segs.length}区間と出場時間）</button></div>`);
   d.querySelector('[data-x]').onclick=closeModal;
-  const base=`${(g.date||'').replace(/-/g,'')}_${g.opp||'練習試合'}`.replace(/[\\/:*?"<>|\s]/g,'');
+  const base=`${(g.date||'').replace(/-/g,'')}_${g.opp||'メンバー選考'}`.replace(/[\\/:*?"<>|\s]/g,'');
   d.querySelector('[data-img="seg"]').onclick=()=>showImage(()=>segImage(g,cur),`${base}_区間${cur+1}.png`);
   d.querySelector('[data-img="all"]').onclick=()=>showImage(()=>gameImage(g),`${base}_全体.png`);
+}
+
+// ---- 使い方 ----
+const HELP=[
+['はじめに',`<p>このアプリは、選手のポジション（1st／2nd）とA／Bの整理、試合のメンバー選考と出場時間の管理をするためのものです。</p>
+<ul><li><b>ホーム画面に追加</b>：Safariで開き、共有ボタン→「ホーム画面に追加」を選ぶと、アプリのように使えます。</li>
+<li><b>保存</b>：入力はこの端末に自動で保存されます。保存ボタンはありません。</li>
+<li><b>画面の切り替え</b>：上の「ポジション」「メンバー選考」で切り替えます。</li></ul>`],
+['ポジション：選手を整理する',`<ul><li><b>A／B</b>：選手ごとのボタンで分けます。もう一度押すと未分類に戻ります。</li>
+<li><b>1st／2nd</b>：プルダウンで選びます（GK・CB・HV・WB・CM・AM・CF）。2ndが1stと同じだと赤枠になります。</li>
+<li><b>ケガ</b>：押すと「ケガ中」になり、集計やメンバー選考の候補から外れます。治ったらもう一度押します。</li>
+<li><b>対象／対象外</b>：今季のメンバーから長く外す選手は「対象外」にします。</li>
+<li><b>選手を追加</b>：一覧の下のボタンから、名前・学年などを入れて追加します。</li>
+<li><b>絞り込み</b>：一覧の上のボタンで「未入力あり」「チーム未分類」「ケガ」やポジションごとに絞れます。</li></ul>`],
+['ポジション：人数バランスを見る',`<ul><li><b>システム</b>：3-4-2-1／3-4-1-2を切り替えると、枠の数が変わります。</li>
+<li><b>集計対象</b>：全体／Aチーム／Bチームで切り替えます。</li>
+<li><b>ピッチ図</b>：各ポジションに「1stの人数／1st＋2ndの合計」が出ます。緑＝十分、黄＝やや不足、赤＝不足。タップするとその位置の選手が出ます。</li>
+<li><b>目安</b>：全体では1stは枠×2人、1st＋2ndは枠×3人。チーム単位では1stは枠と同数、1st＋2ndは枠×2人。</li>
+<li><b>画像で出力</b>：表の下のボタンで、ポジション別メンバーの画像を作れます。</li></ul>`],
+['メンバー選考：試合を準備する',`<ol><li>「＋新しい試合」で試合を作り、対戦相手と日付を入れます。</li>
+<li>「時間と本数を設定」で、「45分×2本」「30分×1本」のように行を並べて決めます。</li>
+<li>「メンバーを選ぶ」で参加する選手を選びます。ケガ中の選手は選べません。</li></ol>`],
+['メンバー選考：メンバーを組む（区間）',`<p>メンバーが変わる時点ごとに「区間」を作ります。区間は次の変更まで、本をまたいで続きます。</p>
+<ul><li><b>枠をタップ</b>すると選手を選べます。そのポジションが1st→2nd→その他、出場時間が少ない順に並びます。ほかの枠にいる選手を選ぶと入れ替わります。</li>
+<li><b>＋メンバー変更を追加</b>：「何本目の何分から」を指定します。0分＝その本の開始です。その時点のメンバーを引き継いだ区間ができるので、変える選手だけ入れ替えます。</li>
+<li><b>前の区間をコピー</b>：ひとつ前の区間のメンバーとシステムをそのまま入れます。</li>
+<li><b>出場時間が少ない順に組む</b>：ほかの区間での出場時間が少ない選手から自動で入れます。</li>
+<li><b>開始時点を変更／区間を削除</b>：区間の上のボタンから行います。削除すると前の区間が続きます。</li>
+<li>枠の縁の色：緑＝1st、黄＝2nd、赤＝本職外。「IN」はその区間から入った選手です。</li></ul>`],
+['メンバー選考：サジェストとアラート',`<ul><li><b>サジェスト</b>：「出場機会を均等」「A優先」「時間を指定」と交代のタイミングを選ぶと、試合全体の案を作ります。「この案を反映する」で区間として取り込み、あとから手で直せます。</li>
+<li><b>アラート</b>：出場時間の上限超え（初期値90分）、空き枠、ケガ中の選手、GKが本職でない、出場なしの選手などを知らせます。項目をタップすると該当する区間に移動します。</li>
+<li><b>出場時間を見る</b>：区間一覧の一番下から、本ごとの出場時間と合計を確認できます。</li></ul>`],
+['画像とテキストで共有する',`<ul><li><b>画像で出力</b>：メンバー選考の画面の下のボタンから、「区間のメンバー」か「試合全体（全区間と出場時間）」を選びます。「保存する」を押すと共有メニューが開くので、LINEなどに送れます。</li>
+<li><b>テキストで書き出す</b>：区間ごとのメンバーと交代、出場時間を文字でまとめます。</li></ul>`],
+['データを共有する・控えをとる',`<p>データは端末ごとに別々です。ほかの人や別の端末と同じデータを使うときは、ファイルでやりとりします。</p>
+<ol><li>画面下の「データ」→「データを書き出す」で、ファイルを作って送ります。</li>
+<li>受け取った人は「データ」→「データを読み込む」でそのファイルを選びます。いまのデータは置き換わります。</li></ol>
+<ul><li>複数の人が別々に入力すると、自動ではまとまりません。入力する人を決めておくと確実です。</li>
+<li>アプリを消すとデータも消えるので、週1回くらい書き出して控えをとってください。</li>
+<li>データのファイルには選手の情報が入っています。部の関係者以外には送らないでください。</li></ul>`]];
+function openHelp(){
+  const d=modal(`<div class="shead"><b>使い方</b><button class="btn ghost sm" data-x>閉じる</button></div><div class="slist helpbox">${HELP.map(([t,b],i)=>`<details${i===0?' open':''}><summary>${t}</summary><div class="hb">${b}</div></details>`).join('')}</div>`);
+  d.querySelector('[data-x]').onclick=closeModal;
+  try{localStorage.setItem('tmu-help-seen','1')}catch(e){}
 }
 
 function renderGame(){
@@ -725,7 +774,7 @@ ${body}
   $('#g_addseg').onclick=()=>openSegTime(g,null);
   v.querySelectorAll('[data-pt]').forEach(b=>b.onclick=()=>{pt=b.dataset.pt==='time'?'time':+b.dataset.pt;renderGame();});
   $('#g_text').onclick=()=>{const t=gameText();$('#g_out').innerHTML='<textarea class="mtext" readonly rows="16"></textarea><p class="note">長押しまたは全選択してコピーしてください。</p>';const ta=$('#g_out textarea');ta.value=t;ta.focus();ta.select();try{navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>{$('#g_out .note').textContent='コピーしました。';},()=>{});}catch(e){}};
-  $('#g_del').onclick=async()=>{if(!await ask('この試合（'+fmtDate(g.date)+(g.opp?' vs '+g.opp:'')+'）を削除しますか？'))return;state.games=state.games.filter(x=>x.id!==g.id);state.curGame=null;pt=0;touch();renderGame();};
+  const _gd=$('#g_del');if(_gd)_gd.onclick=async()=>{if(!await ask('この試合（'+fmtDate(g.date)+(g.opp?' vs '+g.opp:'')+'）を削除しますか？'))return;state.games=state.games.filter(x=>x.id!==g.id);state.curGame=null;pt=0;touch();renderGame();};
   const ab=document.querySelector('.alertbox');if(ab)ab.ontoggle=()=>{alertOpen=ab.open;};
   const li=$('#a_lim');if(li)li.onchange=e=>{const v=parseInt(e.target.value);g.maxMin=v>0?Math.min(300,v):90;touch();renderGame();};
   document.querySelectorAll('[data-ago]').forEach(b=>b.onclick=()=>{pt=b.dataset.ago==='time'?'time':+b.dataset.ago;renderGame();const el=document.querySelector(pt==='time'?'.ttbl':'.segedit');if(el)el.scrollIntoView({block:'start'});});
@@ -854,7 +903,7 @@ ${rows.map(r=>`<tr class="${r.t===0?'zero':''}"><td><div class="tn">${esc(r.p.na
 </tbody></table></div>`;
 }
 function gameText(){
-  const g=G();let t=`練習試合${g.opp?' vs '+g.opp:''}（${fmtDate(g.date)}）${perSummary(g)}\n`;
+  const g=G();let t=`${g.opp?'vs '+g.opp:'メンバー選考'}（${fmtDate(g.date)}）${perSummary(g)}\n`;
   const nm=id=>{const p=byId(id);return p?p.name:'?';};
   g.segs.forEach((s,i)=>{const xy=SYS[s.sys].xy;const[a,b]=segRange(g,i);const d=diff(g,i);
     t+=`\n■${segLabel(g,i)}（${b-a}分）${SYS[s.sys].label}\n`;
@@ -890,6 +939,7 @@ function openPick(list,setList,title,done){
 shell();renderTop();renderList();
 setTab(tab==='game'?'game':'pos');
 renderSave();
+try{if(!localStorage.getItem('tmu-help-seen'))setTimeout(openHelp,400);}catch(e){}
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
 })();
 </script></body></html>
