@@ -249,6 +249,23 @@ select.bad{border-color:var(--short)}
 .helpbox .hb p{margin:0 0 6px}
 .helpbox .hb ul,.helpbox .hb ol{margin:0;padding-left:20px}
 .helpbox .hb li{margin-bottom:4px}
+.sptable{padding:4px 12px}
+.sph small{font-size:12px;font-weight:400;color:var(--sub);margin-left:8px}
+.sprow{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line)}
+.sprow:last-child{border-bottom:0}
+.spl{flex:0 0 92px;font-size:13px;color:var(--sub);padding-top:6px}
+.sps{flex:1;display:flex;flex-wrap:wrap;gap:6px}
+.spb{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;font:inherit;font-size:14px;padding:4px 10px;min-height:32px;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.spb i{font-style:normal;font-size:11px;color:var(--sub)}
+.spb.empty{color:var(--sub);border-style:dashed}
+.spb.diff{border:2px solid var(--warn);padding:3px 9px}
+.spvars{flex-wrap:wrap;margin-bottom:8px}
+.spvars button{font-size:13px;padding:5px 10px}
+.spvars small{font-size:10px;opacity:.7}
+.imglist figure{margin:0 0 16px}
+.imglist figcaption{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--sub);margin-bottom:6px}
+.imglist img{width:100%;border-radius:8px;display:block;border:1px solid var(--line)}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:13px;padding:9px 16px;border-radius:8px;z-index:40;max-width:90%;text-align:center}
 .note{font-size:12px;color:var(--sub);margin:8px 2px 0}
 button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 </style></head><body>
@@ -683,23 +700,79 @@ function posImage(){
     y+=rh[k];});
   return c;
 }
-async function showImage(make,filename){
+
+// ---- 複数枚の画像出力 ----
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200);}
+async function showImages(list,title){
   try{await document.fonts.ready;}catch(e){}
-  const c=make();const blob=await new Promise(r=>c.toBlob(r,'image/png'));const url=URL.createObjectURL(blob);
+  const items=[];for(const it of list){const c=it.make();const blob=await new Promise(r=>c.toBlob(r,'image/png'));items.push({...it,blob,url:URL.createObjectURL(blob)});}
+  const n=items.length;
+  const d=modal(`<div class="shead"><b>${esc(title||'画像で出力')}（${n}枚）</b><button class="btn ghost sm" data-x>閉じる</button></div>
+<div class="slist imglist">${items.map((it,k)=>`<figure><figcaption><span>${k+1}/${n}　${esc(it.label||'')}</span><button class="btn ghost sm" data-one="${k}">この1枚を保存</button></figcaption><img src="${it.url}" alt="${esc(it.label||'画像')}"></figure>`).join('')}</div>
+<p class="note" id="im_msg">「まとめて保存」でまとめて共有メニューを開きます。LINEなどにそのまま送れます。画像を長押ししても保存できます。</p>
+<div class="sfoot" style="justify-content:flex-end"><button class="btn" id="im_all">${n>1?'まとめて保存（'+n+'枚）':'保存する'}</button></div>`);
+  const msg=t=>{const m=d.querySelector('#im_msg');if(m)m.textContent=t;};
+  d.querySelector('[data-x]').onclick=()=>{items.forEach(it=>URL.revokeObjectURL(it.url));closeModal();};
   const dl=await getDl();
-  const d=modal(`<div class="shead"><b>画像で出力</b><button class="btn ghost sm" data-x>閉じる</button></div><div class="slist"><img src="${url}" alt="出力した画像" style="width:100%;border-radius:8px;display:block"></div><p class="note" id="im_msg">${dl?'「保存する」で端末に保存できます。スマホのアプリでは共有メニューからLINEなどに送れます。':'画像を長押し（パソコンでは右クリック）して保存してください。'}</p>${dl?'<div class="sfoot" style="justify-content:flex-end"><button class="btn" id="im_save">保存する</button></div>':''}`);
-  d.querySelector('[data-x]').onclick=()=>{URL.revokeObjectURL(url);closeModal();};
-  const sb=d.querySelector('#im_save');if(sb)sb.onclick=async()=>{try{await dl.save({filename,data:blob});d.querySelector('#im_msg').textContent='保存しました。';}catch(e){const m=d.querySelector('#im_msg');if(e&&e.code==='declined')m.textContent='保存をやめました。';else if(e&&e.code==='rate_limited')m.textContent='少し待ってからもう一度押してください。';else{m.textContent='この画面では保存できません。画像を長押しして保存してください。';sb.remove();}}};
+  const saveOne=async it=>{try{await dl.save({filename:it.filename,data:it.blob});msg('保存しました。');}catch(e){msg(e&&e.code==='declined'?'保存をやめました。':'保存できませんでした。画像を長押しして保存してください。');}};
+  d.querySelectorAll('[data-one]').forEach(b=>b.onclick=()=>saveOne(items[+b.dataset.one]));
+  d.querySelector('#im_all').onclick=async()=>{
+    if(n===1)return saveOne(items[0]);
+    const files=items.map(it=>new File([it.blob],it.filename,{type:'image/png'}));
+    if(navigator.canShare&&navigator.canShare({files})){try{await navigator.share({files});msg('共有しました。');return;}catch(e){if(e&&e.name==='AbortError'){msg('保存をやめました。');return;}}}
+    for(const it of items){const a=document.createElement('a');a.href=it.url;a.download=it.filename;document.body.appendChild(a);a.click();a.remove();await new Promise(r=>setTimeout(r,300));}
+    msg(n+'枚を保存しました。');};
 }
+async function showImage(make,filename){return showImages([{make,filename,label:''}]);}
+// 出場時間（1ページ最大18人）
+function minutesImages(g,base){
+  const mins=minutesBy(g,-1);const pl=gAll().map(p=>({p,m:(mins[p.id]||{tot:0}).tot,per:(mins[p.id]||{per:g.periods.map(()=>0)}).per})).sort((a,b)=>b.m-a.m||sortP(a.p,b.p));
+  const per=18,pages=Math.max(1,Math.ceil(pl.length/per));const{total}=offs(g);const lim=g.maxMin||90;
+  return [...Array(pages)].map((_,pg)=>({label:'出場時間'+(pages>1?`（${pg+1}/${pages}）`:''),filename:`${base}_出場時間${pages>1?'_'+(pg+1):''}.png`,make:()=>{
+    const rows=pl.slice(pg*per,(pg+1)*per);const W=1080,top=290,rh=62,H=top+80+rows.length*rh+70;const c=cv(W,H),ctx=c.getContext('2d');
+    header(ctx,W,`${g.opp?'vs '+g.opp:'メンバー選考'}`,`${fmtDate(g.date)}　出場時間${pages>1?`（${pg+1}/${pages}）`:''}`,`${perSummary(g)}（合計${total}分）`);
+    const colX=[60,520],perW=Math.min(110,(W-120-460-130)/Math.max(1,g.periods.length));
+    ctx.fillStyle=IMG.sub;ft(ctx,24,700);ctx.fillText('選手',60,top+40);g.periods.forEach((_,k)=>{ctx.textAlign='right';ctx.fillText(`${k+1}本`,520+perW*(k+1),top+40);});ctx.fillText('合計',W-60,top+40);ctx.textAlign='left';
+    rows.forEach((r,k)=>{const y=top+80+k*rh+40;if(k%2===0){ctx.fillStyle='rgba(255,255,255,.05)';ctx.fillRect(40,y-42,W-80,rh);}
+      ctx.fillStyle=r.m?IMG.white:IMG.sub;fitText(ctx,r.p.name,300,34,700);ctx.fillText(r.p.name,60,y);
+      ft(ctx,24,400);ctx.fillStyle=IMG.sub;ctx.fillText(r.p.p1||'',380,y);
+      ft(ctx,32,700,IMG.num);ctx.textAlign='right';r.per.forEach((m,j)=>{ctx.fillStyle=m?IMG.white:IMG.sub;ctx.fillText(m?String(m):'－',520+perW*(j+1),y);});
+      ctx.fillStyle=r.m>lim?IMG.red:r.m?IMG.white:IMG.sub;ft(ctx,40,700,IMG.num);ctx.fillText(r.m+"'",W-60,y);ctx.textAlign='left';});
+    return c;}}));
+}
+// セットプレー：場面ごとに表（役割｜左｜右）
+const SPPAGES=[['fkd',['L','R'],'FK守備'],['ckd',['C'],'CK守備'],['fka',['L','R'],'FK攻撃'],['cka',['L1','R1'],'CK攻撃 ①ニア'],['cka',['L2','R2'],'CK攻撃 ②ファー']];
+function spPageImages(g,i,base){
+  const s=g.segs[i];spClean(s);const[a,b]=segRange(g,i);
+  return SPPAGES.filter(([sc,vs])=>vs.some(v=>spHas(s,sc,v))).map(([sc,vs,title])=>({label:title,filename:`${base}_区間${i+1}_${title.replace(/\s/g,'')}.png`,make:()=>{
+    const W=1080,top=300,lw=230,cw=(W-120-lw)/vs.length,line=46;const roles=SPDEF[sc].roles(vs[0]);
+    const data=vs.map(v=>spGet(s,sc,v));const bv=vs.map(v=>(SPBASE[sc]||{})[v]);
+    const rowsH=roles.map(([r,,n])=>n*line+26);const H=Math.round(top+70+rowsH.reduce((x,y)=>x+y,0)+90);
+    const c=cv(W,H),ctx=c.getContext('2d');
+    header(ctx,W,title,`${g.opp?'vs '+g.opp+'　':''}${fmtDate(g.date)}`,`区間${i+1}：${segLabel(g,i)}（${b-a}分）`);
+    if(vs.length>1){ctx.fillStyle=IMG.blue;ft(ctx,30,700);vs.forEach((v,k)=>ctx.fillText(varLabel(sc,v).replace(/\s?[①②].*/,''),60+lw+cw*k+10,top+40));}
+    let y=top+70;
+    roles.forEach(([r,rl,n],ri)=>{if(ri%2===0){ctx.fillStyle='rgba(255,255,255,.05)';ctx.fillRect(40,y,W-80,rowsH[ri]);}
+      ctx.fillStyle=IMG.sub;ft(ctx,28,700);ctx.fillText(rl.replace(/（.*）/,''),60,y+46);if(rl.includes('順')){ft(ctx,20,400);ctx.fillText('ニアから順',60,y+76);}
+      vs.forEach((v,k)=>{const d=data[k],bd=bv[k]&&spHas(s,sc,bv[k])?spGet(s,sc,bv[k]):null;
+        d[r].forEach((id,j)=>{const p=byId(id);const df=bd&&(bd[r][j]||'')!==(id||'');const ord=rl.includes('順')?'①②③④⑤⑥'[j]+' ':'';
+          ctx.fillStyle=!p?IMG.sub:df?IMG.warn:IMG.white;const t=ord+(p?p.name:'未定');fitText(ctx,t,cw-20,34,p?700:400);ctx.fillText(t,60+lw+cw*k+10,y+46+j*line);});});
+      y+=rowsH[ri];});
+    if(vs.length>1){ctx.fillStyle=IMG.sub;ft(ctx,22,400);ctx.fillText(`黄色＝${varLabel(sc,vs[0]).replace(/\s?[①②].*/,'')}と違う役割`,60,H-36);}
+    return c;}}));
+}
+
 function openImgMenu(g){
   const cur=pt==='time'?0:pt;
   const d=modal(`<div class="shead"><b>画像で出力</b><button class="btn ghost sm" data-x>閉じる</button></div><div class="slist" style="display:flex;flex-direction:column;gap:8px;padding-bottom:4px">
 <button class="btn" data-img="seg">区間${cur+1}のメンバー（${esc(segLabel(g,cur))}）</button>
-<button class="btn ghost" data-img="all">試合全体（全${g.segs.length}区間と出場時間）</button></div>`);
+<button class="btn ghost" data-img="all">試合全体（区間ごと${g.segs.length}枚＋出場時間）</button>
+<button class="btn ghost" data-img="sp">区間${cur+1}のセットプレーの役割（場面ごと）</button></div>`);
   d.querySelector('[data-x]').onclick=closeModal;
   const base=`${(g.date||'').replace(/-/g,'')}_${g.opp||'メンバー選考'}`.replace(/[\\/:*?"<>|\s]/g,'');
   d.querySelector('[data-img="seg"]').onclick=()=>showImage(()=>segImage(g,cur),`${base}_区間${cur+1}.png`);
-  d.querySelector('[data-img="all"]').onclick=()=>showImage(()=>gameImage(g),`${base}_全体.png`);
+  d.querySelector('[data-img="sp"]').onclick=()=>{const l=spPageImages(g,cur,base);if(!l.length){toast('この区間にはまだセットプレーの役割が入っていません');return;}showImages(l,'セットプレーの役割');};
+  d.querySelector('[data-img="all"]').onclick=()=>showImages([...g.segs.map((x,k)=>({label:`区間${k+1}　${segLabel(g,k)}`,filename:`${base}_区間${k+1}.png`,make:()=>segImage(g,k)})),...minutesImages(g,base)],'試合全体');
 }
 
 // ---- 使い方 ----
@@ -732,7 +805,12 @@ const HELP=[
 ['メンバー選考：サジェストとアラート',`<ul><li><b>サジェスト</b>：「出場機会を均等」「A優先」「時間を指定」と交代のタイミングを選ぶと、試合全体の案を作ります。「この案を反映する」で区間として取り込み、あとから手で直せます。</li>
 <li><b>アラート</b>：出場時間の上限超え（初期値90分）、空き枠、ケガ中の選手、GKが本職でない、出場なしの選手などを知らせます。項目をタップすると該当する区間に移動します。</li>
 <li><b>出場時間を見る</b>：区間一覧の一番下から、本ごとの出場時間と合計を確認できます。</li></ul>`],
-['画像とテキストで共有する',`<ul><li><b>画像で出力</b>：メンバー選考の画面の下のボタンから、「区間のメンバー」か「試合全体（全区間と出場時間）」を選びます。「保存する」を押すと共有メニューが開くので、LINEなどに送れます。</li>
+['メンバー選考：セットプレーの役割',`<ul><li>区間の画面の「セットプレー」で、FK守備・CK守備・FK攻撃・CK攻撃を切り替えます。</li>
+<li>左／右や戦術①②は上のボタンで切り替えます。「左と同じにする」で基準のパターンをコピーし、違う役割だけ入れ替えます。違う役割は黄色の枠になります。</li>
+<li>役割の枠をタップして選手を選びます。別の役割にいる選手を選ぶと入れ替わります。GKは対象外です。</li>
+<li>選手を交代させると、出ていく選手の役割は入ってくる選手に引き継がれます。新しい区間も前の区間の役割を引き継ぎます。</li>
+<li>「画像で出力」から、区間ごとのセットプレーの役割を画像にできます。</li></ul>`],
+['画像とテキストで共有する',`<ul><li><b>画像で出力</b>：メンバー選考の画面の下のボタンから、「区間のメンバー」「試合全体（区間ごとの画像と出場時間）」「セットプレーの役割（場面ごと）」を選びます。複数枚の場合は「まとめて保存」で一度に送れます。「保存する」を押すと共有メニューが開くので、LINEなどに送れます。</li>
 <li><b>テキストで書き出す</b>：区間ごとのメンバーと交代、出場時間を文字でまとめます。</li></ul>`],
 ['データを共有する・控えをとる',`<p>データは端末ごとに別々です。ほかの人や別の端末と同じデータを使うときは、ファイルでやりとりします。</p>
 <ol><li>画面下の「データ」→「データを書き出す」で、ファイルを作って送ります。</li>
@@ -744,6 +822,79 @@ function openHelp(){
   const d=modal(`<div class="shead"><b>使い方</b><button class="btn ghost sm" data-x>閉じる</button></div><div class="slist helpbox">${HELP.map(([t,b],i)=>`<details${i===0?' open':''}><summary>${t}</summary><div class="hb">${b}</div></details>`).join('')}</div>`);
   d.querySelector('[data-x]').onclick=closeModal;
   try{localStorage.setItem('tmu-help-seen','1')}catch(e){}
+}
+
+
+// ---- セットプレーの役割 ----
+const CKA1=[['kick','キッカー',1],['kobore','こぼれ',2],['rest','残り',1],['stf','ストーン前',2],['stb','ストーン後',2],['gk','GK前',1],['far','ファー',1]];
+const CKA2=[['kick','キッカー',1],['kobore','こぼれ',2],['rest','残り',1],['in','中',4],['gk','GK前',1],['block','ブロック',1]];
+const SPDEF={
+ fkd:{label:'FK守備',vars:[['L','左'],['R','右']],roles:()=>[['wall','壁',1],['kobore','こぼれ',2],['down','ダウン',1],['other','その他（ニアから順）',6]]},
+ ckd:{label:'CK守備',vars:[['C','']],roles:()=>[['np','ニアポスト',1],['nf','ニアフリー',1],['ff','ファーフリー',1],['gk','GK前',1],['kobore','こぼれ',1],['mark','マーク',5]]},
+ fka:{label:'FK攻撃',vars:[['L','左'],['R','右']],roles:()=>[['kick','キッカー',1],['kobore','こぼれ',2],['rest','残り',1],['in','中（ニアから順）',6]]},
+ cka:{label:'CK攻撃',vars:[['L1','左 ①ニア'],['R1','右 ①ニア'],['L2','左 ②ファー'],['R2','右 ②ファー']],roles:v=>v.endsWith('1')?CKA1:CKA2}};
+const SPBASE={fkd:{R:'L'},fka:{R:'L'},cka:{R1:'L1',L2:'L1',R2:'L2'}};
+let spScene='fkd';const spVar={fkd:'L',ckd:'C',fka:'L',cka:'L1'};
+const varLabel=(sc,v)=>{const x=SPDEF[sc].vars.find(z=>z[0]===v);return x?x[1]:'';};
+function fieldIds(s){const gi=SYS[s.sys].xy.findIndex(z=>z[0]==='GK');return s.lineup.filter((id,k)=>id&&k!==gi);}
+function spGet(s,sc,v){s.sp=s.sp||{};s.sp[sc]=s.sp[sc]||{};s.sp[sc][v]=s.sp[sc][v]||{};const d=s.sp[sc][v];SPDEF[sc].roles(v).forEach(([r,,n])=>{d[r]=d[r]||[];while(d[r].length<n)d[r].push('');d[r].length=n;});return d;}
+function spHas(s,sc,v){const d=s.sp&&s.sp[sc]&&s.sp[sc][v];return !!d&&Object.values(d).some(a=>a.some(Boolean));}
+function spClean(s){if(!s.sp)return;const ok=new Set(fieldIds(s));Object.values(s.sp).forEach(sc=>Object.values(sc).forEach(d=>Object.keys(d).forEach(r=>{d[r]=d[r].map(id=>ok.has(id)?id:'');})));}
+function spReplace(s,from,to){if(!s.sp||!from)return;Object.values(s.sp).forEach(sc=>Object.values(sc).forEach(d=>Object.keys(d).forEach(r=>{d[r]=d[r].map(id=>id===from?to:id);})));}
+function spRoleOf(d,id){for(const [r,a] of Object.entries(d)){const k=a.indexOf(id);if(k>=0)return[r,k];}return null;}
+function spHtml(g,i){
+  const s=g.segs[i];spClean(s);const sn=snFor(gAll());const sc=spScene,v=spVar[sc],def=SPDEF[sc];const d=spGet(s,sc,v);
+  const bv=(SPBASE[sc]||{})[v];const bd=bv&&spHas(s,sc,bv)?spGet(s,sc,bv):null;
+  const fld=fieldIds(s);const assigned=new Set(Object.values(d).flat().filter(Boolean));const un=fld.filter(id=>!assigned.has(id));
+  const rows=def.roles(v).map(([r,l,n])=>`<div class="sprow"><span class="spl">${l}</span><div class="sps">${d[r].map((id,k)=>{const p=byId(id);const df=bd&&bd[r]&&(bd[r][k]||'')!==(id||'');return `<button class="spb${p?'':' empty'}${df?' diff':''}" data-sp="${r}:${k}">${n>1&&(r==='other'||r==='in')?`<i>${k+1}</i>`:''}${p?esc(sn[p.id]||p.name):'＋'}</button>`;}).join('')}</div></div>`).join('');
+  return `<section><h2 class="sph">セットプレー<small>この区間の役割</small></h2>
+<div class="filters">${Object.entries(SPDEF).map(([k,x])=>`<button data-spsc="${k}" class="${k===sc?'on':''}">${x.label}</button>`).join('')}</div>
+${def.vars.length>1?`<div class="seg spvars">${def.vars.map(([k,l])=>`<button data-spv="${k}" class="${k===v?'on':''}">${l}${spHas(s,sc,k)?'':' <small>未</small>'}</button>`).join('')}</div>`:''}
+<div class="card sptable">${rows}</div>
+${un.length?`<p class="note">未割当（${un.length}人）：${un.map(id=>esc(byId(id).name)).join('、')}</p>`:fld.length?'<p class="note">フィールドの10人全員に役割があります。</p>':''}
+<div class="mact">${bv?`<button class="btn ghost sm" id="sp_copy">${varLabel(sc,bv)}と同じにする</button>`:''}${spHas(s,sc,v)?'<button class="btn ghost sm" id="sp_clear">この役割をクリア</button>':''}</div>
+<p class="note">${bd?`黄色の枠は「${varLabel(sc,bv)}」と違う役割です。`:''}選手を交代させると、出ていく選手の役割は入ってくる選手に自動で引き継がれます。</p></section>`;
+}
+function bindSp(g,i){
+  const s=g.segs[i];
+  document.querySelectorAll('[data-spsc]').forEach(b=>b.onclick=()=>{spScene=b.dataset.spsc;renderGame();});
+  document.querySelectorAll('[data-spv]').forEach(b=>b.onclick=()=>{spVar[spScene]=b.dataset.spv;renderGame();});
+  document.querySelectorAll('[data-sp]').forEach(b=>b.onclick=()=>{const [r,k]=b.dataset.sp.split(':');openSpSlot(g,i,r,+k);});
+  const cp=$('#sp_copy');if(cp)cp.onclick=async()=>{const sc=spScene,v=spVar[sc],bv=SPBASE[sc][v];if(spHas(s,sc,v)&&!await ask(`いまの「${SPDEF[sc].label} ${varLabel(sc,v)}」を「${varLabel(sc,bv)}」と同じにします。よろしいですか？`))return;
+    const src=spGet(s,sc,bv),dst=spGet(s,sc,v);SPDEF[sc].roles(v).forEach(([r,,n])=>{dst[r]=Array.from({length:n},(_,k)=>(src[r]||[])[k]||'');});
+    const used=new Set();SPDEF[sc].roles(v).forEach(([r])=>{dst[r]=dst[r].map(id=>{if(!id||used.has(id))return'';used.add(id);return id;});});touch();renderGame();};
+  const cl=$('#sp_clear');if(cl)cl.onclick=async()=>{if(!await ask(`「${SPDEF[spScene].label} ${varLabel(spScene,spVar[spScene])}」の役割をすべて空にします。よろしいですか？`))return;s.sp[spScene][spVar[spScene]]={};touch();renderGame();};
+}
+function openSpSlot(g,i,r,k){
+  const s=g.segs[i],sc=spScene,v=spVar[sc],d=spGet(s,sc,v),cur=d[r][k];const roles=SPDEF[sc].roles(v);const rl=roles.find(x=>x[0]===r)[1];
+  const lab=(id)=>{const x=spRoleOf(d,id);if(!x)return'<em class="free">未割当</em>';const rr=roles.find(z=>z[0]===x[0]);return `<em>${rr[1]}${rr[2]>1?' '+(x[1]+1):''}</em>`;};
+  const pos=id=>{const j=s.lineup.indexOf(id);return j>=0?SYS[s.sys].xy[j][0]:'';};
+  const ps=fieldIds(s).map(byId).sort((a,b)=>(spRoleOf(d,a.id)?1:0)-(spRoleOf(d,b.id)?1:0));
+  const m=modal(`<div class="shead"><b>${SPDEF[sc].label}${varLabel(sc,v)?' '+varLabel(sc,v):''}　${rl}</b><button class="btn ghost sm" data-x>閉じる</button></div>
+<div class="slist">${ps.map(p=>`<button class="prow${p.id===cur?' cur':''}" data-pid="${esc(p.id)}"><span>${esc(p.name)} <small>${pos(p.id)}</small></span>${lab(p.id)}</button>`).join('')||'<p class="note">この区間のメンバーがまだいません。</p>'}</div>
+${cur?'<div class="sfoot"><button class="btn ghost" data-clear>この役割から外す</button></div>':''}`);
+  m.querySelector('[data-x]').onclick=closeModal;
+  m.querySelectorAll('[data-pid]').forEach(b=>b.onclick=()=>{const id=b.dataset.pid,x=spRoleOf(d,id);if(x)d[x[0]][x[1]]=cur||'';d[r][k]=id;touch();closeModal();renderGame();});
+  const c=m.querySelector('[data-clear]');if(c)c.onclick=()=>{d[r][k]='';touch();closeModal();renderGame();};
+}
+function spBlocks(s){const out=[];Object.entries(SPDEF).forEach(([sc,def])=>def.vars.forEach(([v,l])=>{if(!spHas(s,sc,v))return;const d=spGet(s,sc,v);const bv=(SPBASE[sc]||{})[v];const bd=bv&&spHas(s,sc,bv)?spGet(s,sc,bv):null;
+  out.push({title:def.label+(l?'（'+l+'）':''),rows:def.roles(v).map(([r,rl])=>{const ord=rl.includes('順');return [rl.replace(/（.*）/,''),d[r].map((id,k)=>({n:(ord?'①②③④⑤⑥'[k]:'')+(id?byId(id).name:'未定'),df:!!(bd&&(bd[r][k]||'')!==(id||''))}))];})});}));return out;}
+function spText(s){return spBlocks(s).map(b=>`［${b.title}］`+b.rows.map(([l,a])=>`${l}：${a.map(x=>x.n).join('、')}`).join('／')).join('\n');}
+function spLines(ctx,arr,maxW){ft(ctx,24,400);const lines=[];let cur=[],line='';arr.forEach((it,j)=>{const t=it.n+(j<arr.length-1?'、':'');if(ctx.measureText(line+t).width>maxW&&line){lines.push(cur);cur=[];line='';}cur.push([t,it.df]);line+=t;});if(cur.length)lines.push(cur);return lines;}
+function spImage(g,i){
+  spClean(g.segs[i]);const s=g.segs[i],W=1080,colW=470,gap=40,[a,b]=segRange(g,i);const blocks=spBlocks(s);const tmp=cv(10,10).getContext('2d');
+  const bh=blocks.map(bk=>60+bk.rows.reduce((h,[l,arr])=>h+Math.max(1,spLines(tmp,arr,colW-170).length)*36+10,0)+20);
+  const ys=[];let y=290;for(let k=0;k<blocks.length;k+=2){ys.push(y);y+=Math.max(...bh.slice(k,k+2))+30;}
+  const H=Math.round(Math.max(y,420)+70);const c=cv(W,H),ctx=c.getContext('2d');
+  header(ctx,W,`${g.opp?'vs '+g.opp:'セットプレー'}`,`${fmtDate(g.date)}　セットプレーの役割`,`${segLabel(g,i)}（${b-a}分）`);
+  if(!blocks.length){ctx.fillStyle=IMG.sub;ft(ctx,30,400);ctx.fillText('まだ役割が入力されていません。',60,340);}
+  blocks.forEach((bk,k)=>{const x=60+(k%2)*(colW+gap),yy=ys[Math.floor(k/2)];ctx.fillStyle='rgba(255,255,255,.06)';rr(ctx,x,yy,colW,bh[k],14);ctx.fill();
+    ctx.fillStyle=IMG.white;ft(ctx,30,700);ctx.fillText(bk.title,x+20,yy+44);let ly=yy+92;
+    bk.rows.forEach(([l,arr])=>{ctx.fillStyle=IMG.blue;ft(ctx,22,700);ctx.fillText(l,x+20,ly);ft(ctx,24,400);
+      const lx=x+150,lines=spLines(ctx,arr,colW-170);ft(ctx,24,400);
+      lines.forEach((ln,q)=>{let px=lx;ln.forEach(([t,df])=>{ctx.fillStyle=df?IMG.warn:IMG.white;ctx.fillText(t,px,ly+q*36);px+=ctx.measureText(t).width;});});ly+=Math.max(1,lines.length)*36+10;});});
+  ctx.fillStyle=IMG.sub;ft(ctx,22,400);ctx.fillText('黄色＝基準のパターン（左／①）と違う役割',60,H-36);
+  return c;
 }
 
 function renderGame(){
@@ -799,6 +950,7 @@ ${dHtml}
 <div class="pitch mpitch">${PITCH_SVG}
 ${xy.map(([q,x,y],k)=>{const p=byId(s.lineup[k]);const ch=d&&p&&d.ins.some(z=>z[0]===p.id);return `<button class="mslot ${fit(p,q)}${p&&p.inj?' inj':''}" style="left:${x}%;top:${y}%" data-sslot="${k}"><em>${q}</em><b>${p?esc(sn[p.id]||p.name):'＋'}</b>${ch?'<i class="subin">IN</i>':''}</button>`}).join('')}</div>
 <div class="legend"><span><i style="background:var(--ok)"></i>1st</span><span><i style="background:var(--warn)"></i>2nd</span><span><i style="background:var(--short)"></i>本職外</span><span>IN＝この区間から入った選手</span></div>
+${spHtml(g,i)}
 ${i>0?prevHtml(g,i):''}
 <div class="mact"><button class="btn ghost" id="s_next">＋この後のメンバー変更を追加</button></div>
 <section><h2>この区間で出ていない選手</h2><div class="chips">${bench.length?bench.map(p=>`<span class="mchip">${esc(p.name)}<small>${p.p1||'－'}</small></span>`).join(''):'<p class="note">全員出場しています。</p>'}</div></section></section>`;
@@ -817,7 +969,8 @@ function prevHtml(g,i){
 function bindSeg(g,i){
   const s=g.segs[i];
   document.querySelectorAll('[data-ssys]').forEach(b=>b.onclick=()=>{const sys=b.dataset.ssys;if(sys===s.sys)return;const old=SYS[s.sys].xy.map((x,k)=>[x[0],s.lineup[k]]).filter(x=>x[1]);s.sys=sys;const nx=SYS[sys].xy;s.lineup=nx.map(()=>'');const left=[];old.forEach(([q,id])=>{const k=nx.findIndex((z,j)=>z[0]===q&&!s.lineup[j]);if(k>=0)s.lineup[k]=id;else left.push(id);});left.forEach(id=>{const k=s.lineup.indexOf('');if(k>=0)s.lineup[k]=id;});touch();renderGame();});
-  const cp=$('#s_copy');if(cp)cp.onclick=async()=>{const pv=g.segs[i-1];if(s.lineup.some(Boolean)&&s.lineup.join()!==pv.lineup.join()&&!await ask(`区間${i}（${segLabel(g,i-1)}）のメンバーとシステムで置き換えますか？`))return;s.sys=pv.sys;s.lineup=pv.lineup.slice();touch();renderGame();};
+  const cp=$('#s_copy');if(cp)cp.onclick=async()=>{const pv=g.segs[i-1];if(s.lineup.some(Boolean)&&s.lineup.join()!==pv.lineup.join()&&!await ask(`区間${i}（${segLabel(g,i-1)}）のメンバーとシステムで置き換えますか？`))return;s.sys=pv.sys;s.lineup=pv.lineup.slice();s.sp=JSON.parse(JSON.stringify(pv.sp||{}));touch();renderGame();};
+  bindSp(g,i);
   $('#s_auto').onclick=async()=>{if(s.lineup.some(Boolean)&&!await ask('この区間のメンバーを置き換えて組みますか？'))return;autoSeg(g,i);};
   document.querySelectorAll('[data-sslot]').forEach(b=>b.onclick=()=>openSSlot(g,i,+b.dataset.sslot));
   const pb=document.querySelector('.prevbox');if(pb)pb.ontoggle=()=>{prevOpen=pb.open;};
@@ -847,7 +1000,7 @@ function openSegTime(g,editIdx,afterIdx){
     if(g.segs.some(x=>x!==cur&&x.p===p&&x.t===t)){$('#st_err').textContent='その時点にはすでに区間があります。';return;}
     let target;
     if(cur){cur.p=p;cur.t=t;target=cur;}
-    else{const k=activeAt(g,p,t),src=g.segs[k];target={p,t,sys:src.sys,lineup:src.lineup.slice()};g.segs.push(target);}
+    else{const k=activeAt(g,p,t),src=g.segs[k];target={p,t,sys:src.sys,lineup:src.lineup.slice(),sp:JSON.parse(JSON.stringify(src.sp||{}))};g.segs.push(target);}
     g.segs.sort((a,b)=>a.p-b.p||a.t-b.t);pt=g.segs.indexOf(target);touch();closeModal();renderGame();
     const el=document.querySelector('.segedit');if(el)el.scrollIntoView({block:'start'});};
 }
@@ -870,7 +1023,7 @@ function openSSlot(g,i,k){
 <div class="slist">${[['f1',q+'が1st'],['f2',q+'が2nd'],['f0','その他']].map(([f,l])=>{const a=ps.filter(p=>fit(p,q)===f).sort((a,b)=>((mins[a.id]||{}).tot||0)-((mins[b.id]||{}).tot||0)||sortP(a,b));return a.length?`<h4>${l}（出場時間が少ない順）</h4>`+a.map(row).join(''):''}).join('')}</div>
 ${cur?'<div class="sfoot"><button class="btn ghost" data-clear>この枠を空ける</button></div>':''}`);
   d.querySelector('[data-x]').onclick=closeModal;
-  d.querySelectorAll('[data-pid]').forEach(b=>b.onclick=()=>{const id=b.dataset.pid,j=s.lineup.indexOf(id);if(j>=0)s.lineup[j]=cur||'';s.lineup[k]=id;touch();closeModal();renderGame();});
+  d.querySelectorAll('[data-pid]').forEach(b=>b.onclick=()=>{const id=b.dataset.pid,j=s.lineup.indexOf(id);if(j>=0)s.lineup[j]=cur||'';else if(cur)spReplace(s,cur,id);s.lineup[k]=id;touch();closeModal();renderGame();});
   const c=d.querySelector('[data-clear]');if(c)c.onclick=()=>{s.lineup[k]='';touch();closeModal();renderGame();};
 }
 function openBulk(g){
@@ -910,6 +1063,7 @@ function gameText(){
     if(!d||d.sys||d.ins.length+d.moves.length>4){POS.forEach(q=>{const n=xy.map((z,k)=>z[0]===q?s.lineup[k]:null).filter(x=>x!==null);if(!n.length)return;t+=`${q}：${n.map(id=>id?nm(id):'（空き）').join('、')}\n`;});}
     if(d&&!d.sys&&!d.ins.length&&!d.outs.length&&!d.moves.length)t+='（変更なし）\n';
     if(d){if(d.ins.length)t+='IN：'+d.ins.map(([id,q])=>`${nm(id)}（${q}）`).join('、')+'\n';if(d.outs.length)t+='OUT：'+d.outs.map(([id])=>nm(id)).join('、')+'\n';if(d.moves.length)t+='位置変更：'+d.moves.map(([id,f,q])=>`${nm(id)} ${f}→${q}`).join('、')+'\n';}
+      {spClean(s);const tx=spText(s),pv=i>0?(spClean(g.segs[i-1]),spText(g.segs[i-1])):'';if(tx&&tx!==pv)t+='セットプレー\n'+tx+'\n';}
   });
   const mins=minutesBy(g,-1);
   t+='\n■出場時間\n'+gAll().map(p=>({p,m:(mins[p.id]||{tot:0}).tot})).sort((a,b)=>b.m-a.m).map(r=>`${r.p.name} ${r.m}分`).join('\n')+'\n';
