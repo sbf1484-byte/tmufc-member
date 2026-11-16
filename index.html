@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#13294B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="ポジション整理"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="icon-192.png"><title>ポジション整理 2026｜都立大サッカー部</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#13294B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="TMU FC App"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="icon-192.png"><title>TMU FC App｜都立大サッカー部</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
 <style id="css">
 :root{--red:#C9302C;--bg:#EEF2F7;--surface:#FFFFFF;--ink:#14202E;--sub:#5B6B7E;--line:#D5DDE7;--navy:#13294B;--blue:#1F5FBF;--pitch:#14305A;--pitch-line:rgba(255,255,255,.22);--ok:#23885C;--warn:#B98510;--short:#C93C34;--chip:#E3EAF3;--sel:#DCE8FA;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0D1520;--surface:#162130;--ink:#E5ECF4;--sub:#93A3B6;--line:#273548;--navy:#0B1A30;--blue:#6FA2EE;--pitch:#102746;--ok:#45B985;--warn:#E0B13E;--short:#EE6A61;--red:#E8574F;--chip:#203047;--sel:#1E3354;color-scheme:dark}}
@@ -13,7 +13,8 @@ header{background:var(--navy);color:#fff;padding:18px 0 16px}
 header h1{margin:0;font-size:21px;letter-spacing:.02em}
 header p{margin:2px 0 12px;color:rgba(255,255,255,.72);font-size:13px}
 .sys{display:inline-flex;background:rgba(255,255,255,.1);border-radius:999px;padding:3px}
-.sys button{border:0;background:transparent;color:rgba(255,255,255,.8);font:inherit;font-size:17px;padding:5px 16px;border-radius:999px;cursor:pointer}
+.sys .systab{color:rgba(255,255,255,.8);font-size:15px;padding:6px 12px;border-radius:999px;text-decoration:none;white-space:nowrap}
+.sys button{border:0;background:transparent;color:rgba(255,255,255,.8);font:inherit;font-size:15px;padding:6px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
 .sys button.on{background:#fff;color:var(--navy)}
 .pitch{position:relative;background:var(--pitch);aspect-ratio:68/72;max-height:520px;margin:14px auto 0;border-radius:6px;overflow:hidden;width:100%}
 .pitch svg{position:absolute;inset:0;width:100%;height:100%}
@@ -266,13 +267,48 @@ select.bad{border-color:var(--short)}
 .imglist figcaption{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--sub);margin-bottom:6px}
 .imglist img{width:100%;border-radius:8px;display:block;border:1px solid var(--line)}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:13px;padding:9px 16px;border-radius:8px;z-index:40;max-width:90%;text-align:center}
+.otype button{font-size:13px;padding:4px 12px}
+.offi h2 small{font-size:12px;font-weight:400;color:var(--sub);margin-left:8px}
+.offi{border-top:3px solid var(--blue);margin-top:16px;padding-top:4px}
+.ocount{font-size:18px;color:var(--blue)}.ocount.over,.over{color:var(--short)}
+.opad{padding:12px}
+.orow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.orow .num{font-size:20px}
+.ochips{display:flex;flex-wrap:wrap;gap:6px}
+.ochip{display:inline-flex;align-items:baseline;gap:5px;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:4px 9px;font-size:14px}
+.ochip small{font-size:11px;color:var(--sub)}
+.otbl{padding:4px 10px}
+.otr{display:grid;grid-template-columns:40px 1fr 1fr 1fr;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.otr:last-child{border-bottom:0}
+.oth{font-size:11px;color:var(--sub)}
+.opos{font-family:"Barlow Condensed",sans-serif;font-weight:700;color:var(--blue);font-size:16px}
+.ost{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ost em{color:var(--sub);font-style:normal}
+.ocand{border:2px solid var(--line);background:var(--bg);border-radius:8px;padding:5px 6px;font:inherit;font-size:13px;min-height:36px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;position:relative}
+.ocand.f1{border-color:var(--ok)}.ocand.f2{border-color:var(--warn)}.ocand.f0{border-color:var(--short)}
+.ocand.empty{border-style:dashed;color:var(--sub)}
+.odup{font-style:normal;font-size:10px;background:var(--warn);color:#111;border-radius:3px;padding:0 3px;margin-left:4px}
+.oplan{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.oph{display:flex;align-items:center;gap:8px}
+.osit{font-size:12px;border-radius:4px;padding:1px 8px;color:#fff;background:var(--sub)}
+.osit.s-1{background:var(--ok)}.osit.s-2{background:var(--blue)}.osit.s-3{background:var(--short)}
+.oswaps{list-style:none;margin:8px 0 0;padding:0}
+.oswaps li{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:14px}
+.oarr{color:var(--ok);font-weight:700}
+.onote{margin:6px 0 0;font-size:13px;color:var(--sub)}
+.osits{display:flex;gap:6px;flex-wrap:wrap}
+.osits button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;color:var(--ink)}
+.osits button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.pswap{display:grid;grid-template-columns:1fr auto 1fr auto;gap:6px;align-items:center;margin-bottom:6px}
+.fin,.fsel{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;width:100%;min-width:0}
+.prow:disabled{opacity:.45;cursor:default}
 .note{font-size:12px;color:var(--sub);margin:8px 2px 0}
 button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 </style></head><body>
 <div id="root"></div>
 <script id="app">
 (function(){
-const HEAD='<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>ポジション整理 2026｜都立大サッカー部</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">';
+const HEAD='<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>TMU FC App｜都立大サッカー部</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">';
 const POS=['GK','CB','HV','WB','CM','AM','CF'];
 const SYS={
   '3421':{label:'3-4-2-1',slots:{GK:1,CB:1,HV:2,WB:2,CM:2,AM:2,CF:1},xy:[['CF',50,13],['AM',32,30],['AM',68,30],['WB',11,50],['CM',37,53],['CM',63,53],['WB',89,50],['HV',22,73],['CB',50,76],['HV',78,73],['GK',50,92]]},
@@ -288,6 +324,7 @@ let lastSaved=null;
 let state=JSON.parse(JSON.stringify(saved));
 let dirty=false, sel=null, filter='all', scope='all', canSave=null, adding=false;
 let tab='pos';try{tab=sessionStorage.getItem('tmu-tab')||'pos'}catch(e){}
+if(location.hash==='#game'||location.hash==='#pos'){tab=location.hash.slice(1);try{history.replaceState(null,'',location.pathname)}catch(e){}}
 
 function migrate(st){st.players.forEach(p=>{if(!p.id)p.id=p.no!=null&&p.no!==''?'n'+p.no:'p'+Math.random().toString(36).slice(2,9);if(p.team===undefined)p.team='';delete p.staff;});}
 migrate(state);
@@ -309,8 +346,8 @@ function stats(){
 }
 function shell(){
   $('#root').innerHTML=`
-<header><div class="wrap" style="position:relative"><button class="helpbtn" id="helpbtn" aria-label="使い方">？ 使い方</button><h1>ポジション整理 2026</h1><p>東京都立大学サッカー部　ポジション整理とメンバー選考</p>
-<div class="sys" role="tablist">${[['pos','ポジション'],['game','メンバー選考']].map(([k,l])=>`<button role="tab" data-tab="${k}">${l}</button>`).join('')}</div></div></header>
+<header><div class="wrap" style="position:relative"><button class="helpbtn" id="helpbtn" aria-label="使い方">？ 使い方</button><h1>TMU FC App</h1><p>東京都立大学サッカー部</p>
+<div class="sys" role="tablist">${[['pos','ポジション'],['game','メンバー選考']].map(([k,l])=>`<button role="tab" data-tab="${k}">${l}</button>`).join('')}<a class="systab" href="condition.html">コンディション</a></div></div></header>
 <div class="wrap" id="posview">
 <div class="scope"><span>システム</span><div class="seg">${['3421','3412'].map(k=>`<button class="num" data-sys="${k}">${SYS[k].label}</button>`).join('')}</div></div>
 <div class="scope"><span>集計対象</span><div class="seg" id="scope">${[['all','全体'],['A','Aチーム'],['B','Bチーム']].map(([k,l])=>`<button data-scope="${k}">${l}</button>`).join('')}</div></div>
@@ -509,8 +546,9 @@ function gameAlerts(g){
     const gi=xy.findIndex(z=>z[0]==='GK');const gk=byId(s.lineup[gi]);if(gk&&gk.p1!=='GK'&&gk.p2!=='GK')out.push({lv:'warn',msg:`${L}：GKが本職ではありません（${nm(gk)}）`,seg:i});
     const f0=s.lineup.map((id,k)=>[byId(id),xy[k][0]]).filter(([p,q])=>p&&q!=='GK'&&fit(p,q)==='f0');if(f0.length)out.push({lv:'info',msg:`${L}：本職外の配置 ${f0.map(([p,q])=>nm(p)+'→'+q).join('、')}`,seg:i});
     if(b-a<5&&g.segs.length>1)out.push({lv:'info',msg:`${L}は${b-a}分だけです。入力ミスでないか確認してください`,seg:i});});
-  const none=ps.filter(p=>!(mins[p.id]&&mins[p.id].tot));if(none.length)out.push({lv:'warn',msg:`出場なし（${none.length}人）：${none.map(nm).join('、')}`,time:1});
-  const few=ps.filter(p=>{const t=(mins[p.id]||{}).tot||0;return t>0&&fair&&t<fair*0.5;});if(few.length)out.push({lv:'info',msg:`出場が目安（約${Math.round(fair)}分）の半分未満：${few.map(p=>nm(p)+' '+mins[p.id].tot+'分').join('、')}`,time:1});
+  const none=ps.filter(p=>!(mins[p.id]&&mins[p.id].tot));if(none.length&&!isOff(g))out.push({lv:'warn',msg:`出場なし（${none.length}人）：${none.map(nm).join('、')}`,time:1});
+  const few=ps.filter(p=>{const t=(mins[p.id]||{}).tot||0;return t>0&&fair&&t<fair*0.5;});if(few.length&&!isOff(g))out.push({lv:'info',msg:`出場が目安（約${Math.round(fair)}分）の半分未満：${few.map(p=>nm(p)+' '+mins[p.id].tot+'分').join('、')}`,time:1});
+  out.push(...offAlerts(g));
   const rk={red:0,warn:1,info:2};return out.sort((x,y)=>rk[x.lv]-rk[y.lv]);
 }
 let alertOpen=null;
@@ -647,7 +685,7 @@ function changeLines(g,i){const d=diff(g,i);if(!d)return[];const nm=id=>{const p
   if(!L.length)L.push(['変更','なし',IMG.sub]);return L;}
 function header(ctx,W,title,sub1,sub2){
   ctx.fillStyle=IMG.navy;ctx.fillRect(0,0,W,ctx.canvas.height);
-  ctx.fillStyle=IMG.sub;ft(ctx,28,700);ctx.fillText('東京都立大学サッカー部',60,74);
+  ctx.fillStyle=IMG.sub;ft(ctx,28,700);ctx.fillText('東京都立大学サッカー部　TMU FC App',60,74);
   ctx.fillStyle=IMG.white;fitText(ctx,title,W-120,58,700);ctx.fillText(title,60,148);
   ctx.fillStyle=IMG.sub;ft(ctx,30,400);if(sub1)ctx.fillText(sub1,60,198);if(sub2)ctx.fillText(sub2,60,240);
 }
@@ -767,11 +805,12 @@ function openImgMenu(g){
   const d=modal(`<div class="shead"><b>画像で出力</b><button class="btn ghost sm" data-x>閉じる</button></div><div class="slist" style="display:flex;flex-direction:column;gap:8px;padding-bottom:4px">
 <button class="btn" data-img="seg">区間${cur+1}のメンバー（${esc(segLabel(g,cur))}）</button>
 <button class="btn ghost" data-img="all">試合全体（区間ごと${g.segs.length}枚＋出場時間）</button>
-<button class="btn ghost" data-img="sp">区間${cur+1}のセットプレーの役割（場面ごと）</button></div>`);
+<button class="btn ghost" data-img="sp">区間${cur+1}のセットプレーの役割（場面ごと）</button>${isOff(g)?'<button class="btn ghost" data-img="off">公式戦シート（スタメン・ベンチ／交代候補／交代プラン）</button>':''}</div>`);
   d.querySelector('[data-x]').onclick=closeModal;
   const base=`${(g.date||'').replace(/-/g,'')}_${g.opp||'メンバー選考'}`.replace(/[\\/:*?"<>|\s]/g,'');
   d.querySelector('[data-img="seg"]').onclick=()=>showImage(()=>segImage(g,cur),`${base}_区間${cur+1}.png`);
   d.querySelector('[data-img="sp"]').onclick=()=>{const l=spPageImages(g,cur,base);if(!l.length){toast('この区間にはまだセットプレーの役割が入っていません');return;}showImages(l,'セットプレーの役割');};
+  const oi=d.querySelector('[data-img="off"]');if(oi)oi.onclick=()=>showImages(offImages(g,base),'公式戦シート');
   d.querySelector('[data-img="all"]').onclick=()=>showImages([...g.segs.map((x,k)=>({label:`区間${k+1}　${segLabel(g,k)}`,filename:`${base}_区間${k+1}.png`,make:()=>segImage(g,k)})),...minutesImages(g,base)],'試合全体');
 }
 
@@ -780,7 +819,8 @@ const HELP=[
 ['はじめに',`<p>このアプリは、選手のポジション（1st／2nd）とA／Bの整理、試合のメンバー選考と出場時間の管理をするためのものです。</p>
 <ul><li><b>ホーム画面に追加</b>：Safariで開き、共有ボタン→「ホーム画面に追加」を選ぶと、アプリのように使えます。</li>
 <li><b>保存</b>：入力はこの端末に自動で保存されます。保存ボタンはありません。</li>
-<li><b>画面の切り替え</b>：上の「ポジション」「メンバー選考」で切り替えます。</li></ul>`],
+<li><b>画面の切り替え</b>：上の「ポジション」「メンバー選考」で切り替えます。</li>
+<li><b>コンディション（試作版）</b>：上の「コンディション」から、選手の体調・痛みの報告・欠席連絡・自主トレの入力と、スタッフの確認画面（ケガと回復計画を含む）を試せます。データはこの端末の中だけに保存されます。ここでケガとして登録した選手は、メンバー選考で自動的に「ケガ中」になります。</li></ul>`],
 ['ポジション：選手を整理する',`<ul><li><b>A／B</b>：選手ごとのボタンで分けます。もう一度押すと未分類に戻ります。</li>
 <li><b>1st／2nd</b>：プルダウンで選びます（GK・CB・HV・WB・CM・AM・CF）。2ndが1stと同じだと赤枠になります。</li>
 <li><b>ケガ</b>：押すと「ケガ中」になり、集計やメンバー選考の候補から外れます。治ったらもう一度押します。</li>
@@ -810,6 +850,12 @@ const HELP=[
 <li>役割の枠をタップして選手を選びます。別の役割にいる選手を選ぶと入れ替わります。GKは対象外です。</li>
 <li>選手を交代させると、出ていく選手の役割は入ってくる選手に引き継がれます。新しい区間も前の区間の役割を引き継ぎます。</li>
 <li>「画像で出力」から、区間ごとのセットプレーの役割を画像にできます。</li></ul>`],
+['メンバー選考：公式戦',`<ul><li>試合の「種類」で「公式戦」を選ぶと、「公式戦の準備」の欄が出ます。</li>
+<li><b>ベンチ入り</b>：「ベンチを選ぶ」でスタメン以外から選びます（上限9人。「上限の設定」で変えられます）。</li>
+<li><b>交代候補</b>：スタメン（区間1のメンバー）の各ポジションに、ベンチから第1候補・第2候補を入れます。緑＝1st、黄＝2nd、赤＝本職外。「複」は複数の枠で第1候補になっている選手です。</li>
+<li><b>交代プラン</b>：状況（いつでも／リード／同点／ビハインド）と目安の時間ごとに、OUTとINの組み合わせを登録します。OUTを選ぶと第1候補が自動で入ります。</li>
+<li>試合中の交代は、これまでどおり区間で記録します。交代人数（上限5人）とベンチ外の選手の出場はアラートで知らせます。</li>
+<li>「画像で出力」の「公式戦シート」で、スタメン・ベンチ、交代候補、交代プランの画像を作れます。</li></ul>`],
 ['画像とテキストで共有する',`<ul><li><b>画像で出力</b>：メンバー選考の画面の下のボタンから、「区間のメンバー」「試合全体（区間ごとの画像と出場時間）」「セットプレーの役割（場面ごと）」を選びます。複数枚の場合は「まとめて保存」で一度に送れます。「保存する」を押すと共有メニューが開くので、LINEなどに送れます。</li>
 <li><b>テキストで書き出す</b>：区間ごとのメンバーと交代、出場時間を文字でまとめます。</li></ul>`],
 ['データを共有する・控えをとる',`<p>データは端末ごとに別々です。ほかの人や別の端末と同じデータを使うときは、ファイルでやりとりします。</p>
@@ -897,6 +943,108 @@ function spImage(g,i){
   return c;
 }
 
+
+// ---- 公式戦 ----
+const SITS=['いつでも','リード','同点','ビハインド'];
+function isOff(g){return g.type==='official';}
+function offInit(g){if(!g.bench)g.bench=[];if(!g.cands)g.cands={};if(!g.plans)g.plans=[];if(!g.benchMax)g.benchMax=9;if(!g.subMax)g.subMax=5;
+  const st=new Set(g.segs[0].lineup.filter(Boolean));g.bench=g.bench.filter(id=>!st.has(id)&&byId(id));}
+function starters(g){return g.segs[0].lineup;}
+function slotLabel(g,k){const q=SYS[g.segs[0].sys].xy[k][0];const p=byId(starters(g)[k]);return `${q}　${p?p.name:'（未定）'}`;}
+function subsUsed(g){let n=0;for(let i=1;i<g.segs.length;i++){const d=diff(g,i);if(d)n+=d.ins.length;}return n;}
+function offAlerts(g){const out=[];if(!isOff(g))return out;offInit(g);
+  if(g.bench.length>g.benchMax)out.push({lv:'red',msg:`ベンチ入りが${g.bench.length}人です（上限${g.benchMax}人）`});
+  const used=subsUsed(g);if(used>g.subMax)out.push({lv:'red',msg:`交代が${used}人です（上限${g.subMax}人）`});
+  const bench=new Set(g.bench),st=new Set(starters(g).filter(Boolean));
+  for(let i=1;i<g.segs.length;i++){const d=diff(g,i);if(d)d.ins.forEach(([id])=>{if(!bench.has(id))out.push({lv:'red',msg:`区間${i+1}：ベンチ外の${(byId(id)||{}).name||'?'}が入っています`,seg:i});});}
+  Object.entries(g.cands).forEach(([k,a])=>a.forEach(id=>{if(id&&!bench.has(id))out.push({lv:'warn',msg:`交代候補の${(byId(id)||{}).name||'?'}がベンチに入っていません`});}));
+  g.plans.forEach((pl,i)=>{if(pl.swaps.length>g.subMax)out.push({lv:'warn',msg:`交代プラン${i+1}の交代が${pl.swaps.length}人です（上限${g.subMax}人）`});pl.swaps.forEach(sw=>{if(sw.in&&!bench.has(sw.in))out.push({lv:'warn',msg:`交代プラン${i+1}：${(byId(sw.in)||{}).name||'?'}がベンチに入っていません`});});});
+  return out;}
+function offHtml(g){if(!isOff(g))return'';offInit(g);
+  const xy=SYS[g.segs[0].sys].xy,st=starters(g);const firsts={};Object.values(g.cands).forEach(a=>{if(a[0])firsts[a[0]]=(firsts[a[0]]||0)+1;});
+  const used=subsUsed(g);
+  const benchHtml=g.bench.length?`<div class="ochips">${g.bench.map(id=>{const p=byId(id);return `<span class="ochip">${esc(p.name)}<small>${p.p1||'－'}${p.p2?'/'+p.p2:''}</small></span>`;}).join('')}</div>`:'<p class="note" style="margin:0">まだ選んでいません。</p>';
+  const cand=(k,j)=>{const id=(g.cands[k]||[])[j];const p=byId(id);const q=xy[k][0];const f=p?fit(p,q):'';
+    return `<button class="ocand ${p?f:'empty'}" data-cand="${k}:${j}">${p?`${esc(p.name)}${firsts[id]>1&&j===0?'<i class="odup" title="複数の枠で第1候補">複</i>':''}`:'＋'}</button>`;};
+  const plans=g.plans.map((pl,i)=>`<div class="oplan"><div class="oph"><span class="osit s-${SITS.indexOf(pl.sit)}">${esc(pl.sit)}</span><b>${pl.min?esc(pl.min)+'分ごろ':'時間は状況次第'}</b><span style="flex:1"></span><button class="btn ghost sm" data-pedit="${i}">編集</button></div>
+<ul class="oswaps">${pl.swaps.map(sw=>{const op=byId(st[sw.slot]),ip=byId(sw.in);return `<li><span class="opos">${xy[sw.slot]?xy[sw.slot][0]:'?'}</span>${esc(op?op.name:'?')}<span class="oarr">→</span><b>${esc(ip?ip.name:'?')}</b></li>`;}).join('')}</ul>${pl.note?`<p class="onote">${esc(pl.note)}</p>`:''}</div>`).join('');
+  return `<section class="offi"><div class="shead2"><h2>公式戦の準備</h2><span class="num ocount ${used>g.subMax?'over':''}">交代 ${used}/${g.subMax}</span></div>
+<div class="card opad"><div class="orow"><b>ベンチ入り</b><span class="num ${g.bench.length>g.benchMax?'over':''}">${g.bench.length}/${g.benchMax}人</span><span style="flex:1"></span><button class="btn ghost sm" id="o_bench">ベンチを選ぶ</button></div>${benchHtml}</div>
+<h2>ポジションごとの交代候補<small>スタメンは区間1のメンバー</small></h2>
+<div class="card otbl"><div class="otr oth"><span>ポジ</span><span>スタメン</span><span>第1候補</span><span>第2候補</span></div>${xy.map(([q],k)=>{const p=byId(st[k]);return `<div class="otr"><span class="opos">${q}</span><span class="ost">${p?esc(p.name):'<em>未定</em>'}</span>${cand(k,0)}${cand(k,1)}</div>`;}).join('')}</div>
+<p class="note">候補は枠の色が緑＝そのポジションが1st、黄＝2nd、赤＝本職外です。「複」は、複数の枠で第1候補になっている選手です。</p>
+<h2>交代プラン<small>状況ごとの交代の段取り</small></h2>${plans||'<div class="card opad"><p class="note" style="margin:0">まだプランはありません。</p></div>'}
+<div class="mact"><button class="btn ghost" id="o_addplan">＋交代プランを追加</button><button class="btn ghost sm" id="o_set">上限の設定</button></div></section>`;}
+function bindOff(g){if(!isOff(g))return;
+  const b=$('#o_bench');if(b)b.onclick=()=>{const st=new Set(starters(g).filter(Boolean));openPick(g.bench,ids=>{g.bench=ids.filter(id=>!st.has(id));ids.forEach(id=>{if(!g.att.includes(id))g.att.push(id);});},`ベンチ入り（上限${g.benchMax}人・スタメン以外）`,()=>{offInit(g);touch();renderGame();});};
+  document.querySelectorAll('[data-cand]').forEach(x=>x.onclick=()=>{const [k,j]=x.dataset.cand.split(':').map(Number);openCandPick(g,k,j);});
+  document.querySelectorAll('[data-pedit]').forEach(x=>x.onclick=()=>openPlan(g,+x.dataset.pedit));
+  const ap=$('#o_addplan');if(ap)ap.onclick=()=>openPlan(g,-1);
+  const os=$('#o_set');if(os)os.onclick=()=>{const d=modal(`<div class="shead"><b>上限の設定</b><button class="btn ghost sm" data-x>閉じる</button></div><div class="subform"><label>ベンチ入りの上限（人）<input class="fin" id="os_b" type="number" inputmode="numeric" value="${g.benchMax}"></label><label>交代の上限（人）<input class="fin" id="os_s" type="number" inputmode="numeric" value="${g.subMax}"></label><div class="sfoot" style="justify-content:flex-end"><button class="btn" id="os_ok">保存する</button></div></div>`);
+    d.querySelector('[data-x]').onclick=closeModal;$('#os_ok').onclick=()=>{g.benchMax=Math.max(1,parseInt($('#os_b').value)||9);g.subMax=Math.max(1,parseInt($('#os_s').value)||5);touch();closeModal();renderGame();};};
+}
+function openCandPick(g,k,j){
+  const q=SYS[g.segs[0].sys].xy[k][0];const cur=(g.cands[k]||[])[j];const other=(g.cands[k]||[])[1-j];
+  const rk={f1:0,f2:1,f0:2,fe:3};const L=g.bench.map(byId).filter(p=>p&&!p.inj).sort((a,b)=>rk[fit(a,q)]-rk[fit(b,q)]||sortP(a,b));
+  const usedAs=id=>Object.entries(g.cands).filter(([kk,a])=>a.includes(id)&&+kk!==k).map(([kk,a])=>`${SYS[g.segs[0].sys].xy[+kk][0]}の第${a.indexOf(id)+1}`).join('・');
+  const d=modal(`<div class="shead"><b>${q}の第${j+1}候補</b><button class="btn ghost sm" data-x>閉じる</button></div><p class="note" style="margin:0 0 6px">スタメン：${esc((byId(starters(g)[k])||{}).name||'未定')}</p><div class="slist">${L.map(p=>{const f=fit(p,q);return `<button class="prow${p.id===cur?' cur':''}" data-cid="${p.id}" ${p.id===other?'disabled':''}><span>${esc(p.name)} <small>${p.p1||'－'}${p.p2?'/'+p.p2:''}${usedAs(p.id)?'・'+usedAs(p.id)+'候補':''}</small></span><em class="${f==='f1'?'free':''}">${p.id===other?'第'+(2-j)+'候補':f==='f1'?'1st':f==='f2'?'2nd':'本職外'}</em></button>`;}).join('')||'<p class="note">先に「ベンチを選ぶ」でベンチ入りの選手を選んでください。</p>'}</div>${cur?'<div class="sfoot"><button class="btn ghost" data-clear>この候補を外す</button></div>':''}`);
+  d.querySelector('[data-x]').onclick=closeModal;
+  d.querySelectorAll('[data-cid]').forEach(b=>b.onclick=()=>{g.cands[k]=g.cands[k]||['',''];g.cands[k][j]=b.dataset.cid;touch();closeModal();renderGame();});
+  const c=d.querySelector('[data-clear]');if(c)c.onclick=()=>{g.cands[k][j]='';touch();closeModal();renderGame();};
+}
+function openPlan(g,idx){
+  const xy=SYS[g.segs[0].sys].xy,st=starters(g);const src=idx>=0?g.plans[idx]:null;
+  let P=src?JSON.parse(JSON.stringify(src)):{id:'pl'+Date.now(),sit:'いつでも',min:'',swaps:[{slot:-1,in:''}],note:''};
+  const d=modal(`<div class="shead"><b>交代プラン${idx>=0?idx+1:''}</b><button class="btn ghost sm" data-x>閉じる</button></div><div class="slist" id="pl_body"></div><p class="err" id="pl_err"></p><div class="sfoot" style="justify-content:space-between">${idx>=0?'<button class="btn ghost" id="pl_del" style="border-color:var(--short);color:var(--short)">削除</button>':'<span></span>'}<button class="btn" id="pl_ok">保存する</button></div>`);
+  const draw=()=>{const usedIn=new Set(P.swaps.map(s=>s.in).filter(Boolean)),usedOut=new Set(P.swaps.map(s=>s.slot).filter(s=>s>=0));
+    $('#pl_body').innerHTML=`<div class="subform"><label>状況<span class="osits">${SITS.map(s=>`<button type="button" class="${P.sit===s?'on':''}" data-psit="${s}">${s}</button>`).join('')}</span></label>
+<label>目安の時間（分）<input class="fin" id="pl_min" inputmode="numeric" value="${esc(P.min)}" placeholder="例：60（空欄なら状況次第）"></label>
+<div><div style="font-size:12px;color:var(--sub);margin-bottom:6px">交代（OUT → IN）</div>${P.swaps.map((sw,i)=>`<div class="pswap"><select class="fsel" data-sout="${i}"><option value="-1">OUT</option>${xy.map(([q],k)=>`<option value="${k}" ${sw.slot===k?'selected':''} ${usedOut.has(k)&&sw.slot!==k?'disabled':''}>${esc(slotLabel(g,k))}</option>`).join('')}</select><span class="oarr">→</span><select class="fsel" data-sin="${i}"><option value="">IN</option>${g.bench.map(id=>{const p=byId(id);const q=sw.slot>=0?xy[sw.slot][0]:'';const f=q?fit(p,q):'';const c=(g.cands[sw.slot]||[]).indexOf(id);return `<option value="${id}" ${sw.in===id?'selected':''} ${usedIn.has(id)&&sw.in!==id?'disabled':''}>${c>=0?'第'+(c+1)+'候補 ':''}${esc(p.name)}${f==='f1'?'（1st）':f==='f2'?'（2nd）':''}</option>`;}).join('')}</select><button class="btn ghost sm" data-sx="${i}" aria-label="この交代を外す">外す</button></div>`).join('')}
+<button type="button" class="btn ghost sm" id="pl_add" ${P.swaps.length>=g.subMax?'disabled':''}>＋交代を追加（${P.swaps.length}/${g.subMax}）</button></div>
+<label>メモ<textarea class="fin" id="pl_note" rows="2" placeholder="例：前からのプレスを強めたいとき">${esc(P.note)}</textarea></label></div>`;
+    const keep=()=>{P.min=$('#pl_min').value.trim();P.note=$('#pl_note').value;};
+    d.querySelectorAll('[data-psit]').forEach(b=>b.onclick=()=>{keep();P.sit=b.dataset.psit;draw();});
+    d.querySelectorAll('[data-sout]').forEach(s=>s.onchange=()=>{keep();const sw=P.swaps[+s.dataset.sout];sw.slot=+s.value;const c=g.cands[sw.slot]||[];if(!sw.in){const f=c.find(id=>id&&g.bench.includes(id)&&!P.swaps.some(x=>x.in===id));if(f)sw.in=f;}draw();});
+    d.querySelectorAll('[data-sin]').forEach(s=>s.onchange=()=>{keep();P.swaps[+s.dataset.sin].in=s.value;draw();});
+    d.querySelectorAll('[data-sx]').forEach(b=>b.onclick=()=>{keep();P.swaps.splice(+b.dataset.sx,1);if(!P.swaps.length)P.swaps.push({slot:-1,in:''});draw();});
+    const ad=$('#pl_add');if(ad)ad.onclick=()=>{keep();if(P.swaps.length<g.subMax)P.swaps.push({slot:-1,in:''});draw();};};
+  draw();
+  d.querySelector('[data-x]').onclick=closeModal;
+  $('#pl_ok').onclick=()=>{P.min=$('#pl_min').value.trim();P.note=$('#pl_note').value.trim();const sw=P.swaps.filter(s=>s.slot>=0||s.in);
+    if(!sw.length)return $('#pl_err').textContent='交代を1つ以上入れてください。';if(sw.some(s=>s.slot<0||!s.in))return $('#pl_err').textContent='OUTとINの両方を選んでください。';
+    if(P.min&&!/^\d+$/.test(P.min))return $('#pl_err').textContent='時間は数字で入れてください。';
+    P.swaps=sw;if(idx>=0)g.plans[idx]=P;else g.plans.push(P);touch();closeModal();renderGame();toast('交代プランを保存しました');};
+  const dl=$('#pl_del');if(dl)dl.onclick=async()=>{if(!await ask('この交代プランを削除しますか？'))return;g.plans.splice(idx,1);touch();closeModal();renderGame();};
+}
+function offText(g){if(!isOff(g))return'';offInit(g);const xy=SYS[g.segs[0].sys].xy,st=starters(g);const nm=id=>{const p=byId(id);return p?p.name:'';};
+  let t=`\n■ベンチ（${g.bench.length}人）\n${g.bench.map(nm).join('、')||'未定'}\n\n■交代候補\n`;
+  xy.forEach(([q],k)=>{const c=(g.cands[k]||[]).filter(Boolean);t+=`${q} ${nm(st[k])||'未定'}：${c.length?c.map((id,j)=>`${j+1}.${nm(id)}`).join(' '):'－'}\n`;});
+  if(g.plans.length){t+='\n■交代プラン\n';g.plans.forEach((pl,i)=>{t+=`${i+1}.［${pl.sit}］${pl.min?pl.min+'分ごろ':''} ${pl.swaps.map(s=>`${xy[s.slot]?xy[s.slot][0]:''} ${nm(st[s.slot])}→${nm(s.in)}`).join('／')}${pl.note?'（'+pl.note+'）':''}\n`;});}
+  return t;}
+function offImages(g,base){offInit(g);const xy=SYS[g.segs[0].sys].xy,st=starters(g);const sn=snFor(gAll());const nm=id=>{const p=byId(id);return p?p.name:'';};
+  const title=`${g.opp?'vs '+g.opp:'公式戦'}`;
+  const one={label:'スタメンとベンチ',filename:`${base}_スタメンとベンチ.png`,make:()=>{const W=1080,pitchY=290,pitchH=980;const rows=Math.ceil(g.bench.length/2);const H=pitchY+pitchH+110+Math.max(1,rows)*60+60;const c=cv(W,H),ctx=c.getContext('2d');
+    header(ctx,W,title,`${fmtDate(g.date)}　公式戦`,`スタメン　${SYS[g.segs[0].sys].label}`);drawLineup(ctx,g.segs[0],60,pitchY,W-120,pitchH,new Set(),sn);
+    let y=pitchY+pitchH+70;ctx.fillStyle=IMG.white;ft(ctx,34,700);ctx.fillText(`ベンチ（${g.bench.length}人）`,60,y);y+=60;
+    g.bench.forEach((id,i)=>{const p=byId(id);const x=60+(i%2)*480,yy=y+Math.floor(i/2)*60;ctx.fillStyle=IMG.white;fitText(ctx,p.name,300,32,700);ctx.fillText(p.name,x,yy);ft(ctx,24,400);ctx.fillStyle=IMG.sub;ctx.fillText(`${p.p1||''}${p.p2?'/'+p.p2:''}`,x+310,yy);});
+    return c;}};
+  const two={label:'ポジションごとの交代候補',filename:`${base}_交代候補.png`,make:()=>{const W=1080,top=300,rh=78;const H=top+70+xy.length*rh+90;const c=cv(W,H),ctx=c.getContext('2d');
+    header(ctx,W,title,`${fmtDate(g.date)}　公式戦`,'ポジションごとの交代候補');const cx=[60,180,480,780];
+    ctx.fillStyle=IMG.sub;ft(ctx,24,700);['ポジ','スタメン','第1候補','第2候補'].forEach((h,i)=>ctx.fillText(h,cx[i],top+40));
+    xy.forEach(([q],k)=>{const y=top+70+k*rh+50;if(k%2===0){ctx.fillStyle='rgba(255,255,255,.05)';ctx.fillRect(40,y-48,W-80,rh);}
+      ctx.fillStyle=IMG.blue;ft(ctx,36,700,IMG.num);ctx.fillText(q,cx[0],y);ctx.fillStyle=IMG.white;const s1=nm(st[k])||'未定';fitText(ctx,s1,280,32,700);ctx.fillText(s1,cx[1],y);
+      (g.cands[k]||[]).slice(0,2).forEach((id,j)=>{const p=byId(id);if(!p)return;const f=fit(p,q);ctx.fillStyle=f==='f1'?IMG.white:f==='f2'?IMG.warn:IMG.red;fitText(ctx,p.name,280,32,j===0?700:400);ctx.fillText(p.name,cx[2+j],y);});});
+    ctx.fillStyle=IMG.sub;ft(ctx,22,400);ctx.fillText('白＝1st、黄＝2nd、赤＝本職外',60,H-30);return c;}};
+  const L=[one,two];
+  if(g.plans.length)L.push({label:'交代プラン',filename:`${base}_交代プラン.png`,make:()=>{const W=1080,top=290;const bh=g.plans.map(pl=>100+pl.swaps.length*56+(pl.note?60:0)+20);const H=top+bh.reduce((a,b)=>a+b+24,0)+40;const c=cv(W,H),ctx=c.getContext('2d');
+    header(ctx,W,title,`${fmtDate(g.date)}　公式戦`,`交代プラン（交代は${g.subMax}人まで）`);let y=top;
+    g.plans.forEach((pl,i)=>{ctx.fillStyle='rgba(255,255,255,.06)';rr(ctx,60,y,W-120,bh[i],16);ctx.fill();
+      ctx.fillStyle=IMG.blue;ft(ctx,40,700,IMG.num);ctx.fillText(String(i+1),88,y+60);ctx.fillStyle=IMG.white;ft(ctx,34,700);ctx.fillText(`${pl.sit}${pl.min?'　'+pl.min+'分ごろ':''}`,140,y+60);
+      let yy=y+120;pl.swaps.forEach(sw=>{ctx.fillStyle=IMG.blue;ft(ctx,30,700,IMG.num);ctx.fillText(xy[sw.slot]?xy[sw.slot][0]:'',140,yy);ctx.fillStyle=IMG.sub;ft(ctx,30,400);const o=nm(st[sw.slot]);fitText(ctx,o,300,30,400);ctx.fillText(o,240,yy);ctx.fillStyle=IMG.ok;ft(ctx,30,700);ctx.fillText('→',560,yy);ctx.fillStyle=IMG.white;const n=nm(sw.in);fitText(ctx,n,340,32,700);ctx.fillText(n,620,yy);yy+=56;});
+      if(pl.note){ctx.fillStyle=IMG.sub;ft(ctx,26,400);const ln=wrapLines(ctx,pl.note,W-260)[0];ctx.fillText(ln,140,yy+10);}
+      y+=bh[i]+24;});return c;}});
+  return L;}
+
 function renderGame(){
   const g=G(),v=$('#gameview'),ps=gParts(),segAl=gameAlerts(g);
   const{total}=offs(g);const fair=ps.length?Math.round(total*11/ps.length):0;
@@ -904,9 +1052,11 @@ function renderGame(){
   const body=pt==='time'?timeHtml(g,gAll(),fair):segHtml(g,pt);
   v.innerHTML=`<div class="scope"><span>試合</span><select id="g_sel" style="flex:1;min-width:0">${gl.map(x=>`<option value="${esc(x.id)}"${x.id===g.id?' selected':''}>${esc(fmtDate(x.date))} ${x.opp?'vs '+esc(x.opp):'（相手未入力）'}</option>`).join('')}</select><button class="btn ghost sm" id="g_new">＋新しい試合</button></div>
 <div class="card ginfo"><label>対戦相手<input id="g_opp" value="${esc(g.opp)}" placeholder="例：〇〇大学" autocomplete="off"></label><label>日付<input id="g_date" type="date" value="${esc(g.date)}"></label>
+<div class="gnum"><span>種類</span><div class="seg otype"><button data-gtype="pm" class="${isOff(g)?'':'on'}">練習試合</button><button data-gtype="official" class="${isOff(g)?'on':''}">公式戦</button></div></div>
 <div class="gnum"><span class="num" style="color:var(--ink);font-size:15px">${perSummary(g)}</span><span class="gsub">合計 <b class="num">${total}</b>分</span></div>
 <div class="gnum"><button class="btn ghost sm" id="g_bulk" style="margin-left:0">時間と本数を設定</button></div>
 <div class="gnum"><span>参加 <b class="num">${ps.length}</b>人</span><button class="btn ghost sm" id="g_att">メンバーを選ぶ</button><span class="gsub">均等なら1人約<b class="num">${fair}</b>分</span></div></div>
+${offHtml(g)}
 ${alertHtml(g)}
 <section><div class="shead2"><h2>メンバーの区間</h2><div class="sacts" style="padding:0"><button class="btn ghost sm" id="g_sug" style="margin:0">サジェスト</button><button class="btn sm" id="g_addseg">＋メンバー変更を追加</button></div></div>
 <p class="note" style="margin:0 0 8px">「2本目 22分から」「2本目30分〜3本目30分」のように、メンバーが変わる時点ごとに区間を作ります。区間は次の変更まで、本をまたいで続きます。</p>
@@ -921,6 +1071,8 @@ ${body}
   $('#g_bulk').onclick=()=>openBulk(g);
   $('#g_att').onclick=()=>openPick(g.att,ids=>{g.att=ids;},'参加メンバー',()=>renderGame());
   $('#g_sug').onclick=()=>openSuggest(g);
+  bindOff(g);
+  v.querySelectorAll('[data-gtype]').forEach(b=>b.onclick=async()=>{const t=b.dataset.gtype;if((t==='official')===isOff(g))return;if(t==='official'){g.type='official';offInit(g);if(!(g.periods.length===2&&g.periods.every(x=>x.min===45))&&await ask('公式戦にあわせて、時間を「45分×2本」にしますか？'))g.periods=[{min:45},{min:45}];}else g.type='';touch();renderGame();});
   $('#g_img').onclick=()=>openImgMenu(g);
   $('#g_addseg').onclick=()=>openSegTime(g,null);
   v.querySelectorAll('[data-pt]').forEach(b=>b.onclick=()=>{pt=b.dataset.pt==='time'?'time':+b.dataset.pt;renderGame();});
@@ -1065,8 +1217,10 @@ function gameText(){
     if(d){if(d.ins.length)t+='IN：'+d.ins.map(([id,q])=>`${nm(id)}（${q}）`).join('、')+'\n';if(d.outs.length)t+='OUT：'+d.outs.map(([id])=>nm(id)).join('、')+'\n';if(d.moves.length)t+='位置変更：'+d.moves.map(([id,f,q])=>`${nm(id)} ${f}→${q}`).join('、')+'\n';}
       {spClean(s);const tx=spText(s),pv=i>0?(spClean(g.segs[i-1]),spText(g.segs[i-1])):'';if(tx&&tx!==pv)t+='セットプレー\n'+tx+'\n';}
   });
+  t+=offText(g);
   const mins=minutesBy(g,-1);
-  t+='\n■出場時間\n'+gAll().map(p=>({p,m:(mins[p.id]||{tot:0}).tot})).sort((a,b)=>b.m-a.m).map(r=>`${r.p.name} ${r.m}分`).join('\n')+'\n';
+  const sq=isOff(g)?new Set([...starters(g),...(g.bench||[])]):null;
+  t+='\n■出場時間\n'+gAll().filter(p=>!sq||sq.has(p.id)).map(p=>({p,m:(mins[p.id]||{tot:0}).tot})).sort((a,b)=>b.m-a.m).map(r=>`${r.p.name} ${r.m}分`).join('\n')+'\n';
   return t;
 }
 
